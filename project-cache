@@ -1,0 +1,694 @@
+(let ((n-0 (new emacs-root%))
+      (n-1 (new emacs-test-directory%))
+      (n-2 (new modified-indicator%))
+      (n-3 (new test-indicator%))
+      (n-4 (new emacs-module-test%))
+      (n-5 (new modified-indicator%))
+      (n-6 (new test-indicator%))
+      (n-7 (new emacs-module-test%))
+      (n-8 (new modified-indicator%))
+      (n-9 (new test-indicator%))
+      (n-10 (new emacs-module-test%))
+      (n-11 (new modified-indicator%))
+      (n-12 (new test-indicator%))
+      (n-13 (new emacs-module-test%))
+      (n-14 (new modified-indicator%))
+      (n-15 (new test-indicator%))
+      (n-16 (new emacs-module-test%))
+      (n-17 (new modified-indicator%))
+      (n-18 (new test-indicator%))
+      (n-19 (new emacs-module-test%))
+      (n-20 (new modified-indicator%))
+      (n-21 (new test-indicator%))
+      (n-22 (new emacs-module-test%))
+      (n-23 (new emacs-directory%))
+      (n-24 (new modified-indicator%))
+      (n-25 (new test-indicator%))
+      (n-26 (new emacs-module%))
+      (n-27 (new modified-indicator%))
+      (n-28 (new test-indicator%))
+      (n-29 (new emacs-module%))
+      (n-30 (new modified-indicator%))
+      (n-31 (new test-indicator%))
+      (n-32 (new emacs-module%))
+      (n-33 (new modified-indicator%))
+      (n-34 (new test-indicator%))
+      (n-35 (new emacs-module%))
+      (n-36 (new emacs-directory%))
+      (n-37 (new modified-indicator%))
+      (n-38 (new test-indicator%))
+      (n-39 (new emacs-file%))
+      (n-40 (new modified-indicator%))
+      (n-41 (new test-indicator%))
+      (n-42 (new emacs-file%))
+      (n-43 (new modified-indicator%))
+      (n-44 (new test-indicator%))
+      (n-45 (new emacs-file%))
+      (n-46 (new modified-indicator%))
+      (n-47 (new test-indicator%))
+      (n-48 (new emacs-file%))
+      (n-49 (new modified-indicator%))
+      (n-50 (new test-indicator%))
+      (n-51 (new emacs-file%))
+      (n-52 (new emacs-directory%))
+      (n-53 (new modified-indicator%))
+      (n-54 (new test-indicator%))
+      (n-55 (new emacs-module%))
+      (n-56 (new emacs-directory%))
+      (n-57 (new modified-indicator%))
+      (n-58 (new test-indicator%))
+      (n-59 (new emacs-module%))
+      (n-60 (new modified-indicator%))
+      (n-61 (new test-indicator%))
+      (n-62 (new emacs-module%))
+      (n-63 (new modified-indicator%))
+      (n-64 (new test-indicator%))
+      (n-65 (new emacs-module%))
+      (n-66 (new modified-indicator%))
+      (n-67 (new test-indicator%))
+      (n-68 (new emacs-module%))
+      (n-69 (new modified-indicator%))
+      (n-70 (new test-indicator%))
+      (n-71 (new emacs-module%))
+      (n-72 (new modified-indicator%))
+      (n-73 (new test-indicator%))
+      (n-74 (new emacs-module%))
+      (n-75 (new modified-indicator%))
+      (n-76 (new test-indicator%))
+      (n-77 (new emacs-module%))
+      (n-78 (new modified-indicator%))
+      (n-79 (new test-indicator%))
+      (n-80 (new emacs-module%))
+      (n-81 (new modified-indicator%))
+      (n-82 (new test-indicator%))
+      (n-83 (new emacs-module%))
+      (n-84 (new modified-indicator%))
+      (n-85 (new test-indicator%))
+      (n-86 (new emacs-module%))
+      (n-87 (new emacs-directory%))
+      (n-88 (new modified-indicator%))
+      (n-89 (new test-indicator%))
+      (n-90 (new emacs-module%))
+      (n-91 (new modified-indicator%))
+      (n-92 (new test-indicator%))
+      (n-93 (new emacs-module%))
+      (n-94 (new modified-indicator%))
+      (n-95 (new test-indicator%))
+      (n-96 (new emacs-module%))
+      (n-97 (new modified-indicator%))
+      (n-98 (new test-indicator%))
+      (n-99 (new emacs-module%))
+      (n-100 (new modified-indicator%))
+      (n-101 (new test-indicator%))
+      (n-102 (new emacs-module%))
+      (n-103 (new modified-indicator%))
+      (n-104 (new test-indicator%))
+      (n-105 (new emacs-module%))
+      (n-106 (new modified-indicator%))
+      (n-107 (new test-indicator%))
+      (n-108 (new emacs-module%))
+      (n-109 (new modified-indicator%))
+      (n-110 (new test-indicator%))
+      (n-111 (new emacs-file%))
+      (n-112 (new modified-indicator%))
+      (n-113 (new test-indicator%))
+      (n-114 (new emacs-module%)))
+  (set-field! test-directory n-0 n-1)
+  (send n-0 init-name! "devtools")
+  (set-field! current-node n-0 n-108)
+  (send n-0 init-children!
+    (list n-1 n-23 n-36 n-52 n-56 n-99 n-102 n-105 n-108 n-111 n-114))
+  (set-field! parent n-1 n-0)
+  (send n-1 init-name! "tests")
+  (set-field! indicators n-1 (list))
+  (send n-1 init-point! 1)
+  (send n-1 init-children! (list n-4 n-7 n-10 n-13 n-16 n-19 n-22))
+  (send*
+   n-2
+   (init-color! "DarkRed")
+   (init-node! n-4)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-3
+   (init-color! "DarkGray")
+   (init-node! n-4)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-4 init-name! "tree-edsl-edsl-test.rkt")
+  (set-field! indicators n-4 (list n-2 n-3))
+  (send n-4 init-point! 6)
+  (send*
+   n-5
+   (init-color! "DarkRed")
+   (init-node! n-7)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-6
+   (init-color! "DarkGray")
+   (init-node! n-7)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-7 init-name! "backend-buffer-test.rkt")
+  (set-field! indicators n-7 (list n-5 n-6))
+  (send n-7 init-point! 36)
+  (send*
+   n-8
+   (init-color! "DarkRed")
+   (init-node! n-10)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-9
+   (init-color! "DarkGray")
+   (init-node! n-10)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-10 init-name! "tree-project-test.rkt")
+  (set-field! indicators n-10 (list n-8 n-9))
+  (send n-10 init-point! 66)
+  (send*
+   n-11
+   (init-color! "DarkRed")
+   (init-node! n-13)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-12
+   (init-color! "DarkGray")
+   (init-node! n-13)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-13 init-name! "tree-base-test.rkt")
+  (set-field! indicators n-13 (list n-11 n-12))
+  (send n-13 init-point! 94)
+  (send*
+   n-14
+   (init-color! "DarkRed")
+   (init-node! n-16)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-15
+   (init-color! "DarkGray")
+   (init-node! n-16)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-16 init-name! "tree-ebuffer-test.rkt")
+  (set-field! indicators n-16 (list n-14 n-15))
+  (send n-16 init-point! 119)
+  (send*
+   n-17
+   (init-color! "DarkRed")
+   (init-node! n-19)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-18
+   (init-color! "DarkGray")
+   (init-node! n-19)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-19 init-name! "tree-file-test.rkt")
+  (set-field! indicators n-19 (list n-17 n-18))
+  (send n-19 init-point! 147)
+  (send*
+   n-20
+   (init-color! "DarkRed")
+   (init-node! n-22)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-21
+   (init-color! "DarkGray")
+   (init-node! n-22)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-22 init-name! "tree-git-test.rkt")
+  (set-field! indicators n-22 (list n-20 n-21))
+  (send n-22 init-point! 172)
+  (send n-23 init-name! "backend")
+  (set-field! indicators n-23 (list))
+  (send n-23 init-point! 197)
+  (send n-23 init-children! (list n-26 n-29 n-32 n-35))
+  (send*
+   n-24
+   (init-color! "DarkRed")
+   (init-node! n-26)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-25
+   (init-color! "DarkGray")
+   (init-node! n-26)
+   (init-position! 1)
+   (init-show?! #t))
+  (send n-26 init-test-module n-7)
+  (send n-26 init-name! "buffer.rkt")
+  (set-field! indicators n-26 (list n-24 n-25))
+  (send n-26 init-point! 8)
+  (send*
+   n-27
+   (init-color! "DarkRed")
+   (init-node! n-29)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-28
+   (init-color! "DarkGray")
+   (init-node! n-29)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-29 init-name! "emacs.rkt")
+  (set-field! indicators n-29 (list n-27 n-28))
+  (send n-29 init-point! 25)
+  (send*
+   n-30
+   (init-color! "DarkRed")
+   (init-node! n-32)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-31
+   (init-color! "DarkGray")
+   (init-node! n-32)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-32 init-name! "indicator.rkt")
+  (set-field! indicators n-32 (list n-30 n-31))
+  (send n-32 init-point! 41)
+  (send*
+   n-33
+   (init-color! "DarkRed")
+   (init-node! n-35)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-34
+   (init-color! "DarkGray")
+   (init-node! n-35)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-35 init-name! "specifier.rkt")
+  (set-field! indicators n-35 (list n-33 n-34))
+  (send n-35 init-point! 61)
+  (send n-36 init-name! "elisp-side")
+  (set-field! indicators n-36 (list))
+  (send n-36 init-point! 278)
+  (send n-36 init-children! (list n-39 n-42 n-45 n-48 n-51))
+  (send*
+   n-37
+   (init-color! "DarkRed")
+   (init-node! n-39)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-38
+   (init-color! "DarkGray")
+   (init-node! n-39)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-39 init-name! "source-processor.el")
+  (set-field! indicators n-39 (list n-37 n-38))
+  (send n-39 init-point! 11)
+  (send*
+   n-40
+   (init-color! "DarkRed")
+   (init-node! n-42)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-41
+   (init-color! "DarkGray")
+   (init-node! n-42)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-42 init-name! "sp-buffer.el")
+  (set-field! indicators n-42 (list n-40 n-41))
+  (send n-42 init-point! 37)
+  (send*
+   n-43
+   (init-color! "DarkRed")
+   (init-node! n-45)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-44
+   (init-color! "DarkGray")
+   (init-node! n-45)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-45 init-name! "sp-git.el")
+  (set-field! indicators n-45 (list n-43 n-44))
+  (send n-45 init-point! 56)
+  (send*
+   n-46
+   (init-color! "DarkRed")
+   (init-node! n-48)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-47
+   (init-color! "DarkGray")
+   (init-node! n-48)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-48 init-name! "sp-project.el")
+  (set-field! indicators n-48 (list n-46 n-47))
+  (send n-48 init-point! 72)
+  (send*
+   n-49
+   (init-color! "DarkRed")
+   (init-node! n-51)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-50
+   (init-color! "DarkGray")
+   (init-node! n-51)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-51 init-name! "sp-server.el")
+  (set-field! indicators n-51 (list n-49 n-50))
+  (send n-51 init-point! 92)
+  (send n-52 init-name! "semantics")
+  (set-field! indicators n-52 (list))
+  (send n-52 init-point! 389)
+  (send n-52 init-children! (list n-55))
+  (send*
+   n-53
+   (init-color! "DarkRed")
+   (init-node! n-55)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-54
+   (init-color! "DarkGray")
+   (init-node! n-55)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-55 init-name! "base-inferrer.rkt")
+  (set-field! indicators n-55 (list n-53 n-54))
+  (send n-55 init-point! 10)
+  (send n-56 init-name! "tree")
+  (set-field! indicators n-56 (list))
+  (send n-56 init-point! 423)
+  (send n-56 init-children!
+    (list n-59 n-62 n-65 n-68 n-71 n-74 n-77 n-80 n-83 n-86 n-87))
+  (send*
+   n-57
+   (init-color! "DarkRed")
+   (init-node! n-59)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-58
+   (init-color! "DarkGray")
+   (init-node! n-59)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-59 init-name! "template.rkt")
+  (set-field! indicators n-59 (list n-57 n-58))
+  (send n-59 init-point! 5)
+  (send*
+   n-60
+   (init-color! "DarkRed")
+   (init-node! n-62)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-61
+   (init-color! "DarkGray")
+   (init-node! n-62)
+   (init-position! 1)
+   (init-show?! #t))
+  (send n-62 init-test-module n-13)
+  (send n-62 init-name! "base.rkt")
+  (set-field! indicators n-62 (list n-60 n-61))
+  (send n-62 init-point! 24)
+  (send*
+   n-63
+   (init-color! "DarkRed")
+   (init-node! n-65)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-64
+   (init-color! "DarkGray")
+   (init-node! n-65)
+   (init-position! 1)
+   (init-show?! #t))
+  (send n-65 init-test-module n-16)
+  (send n-65 init-name! "ebuffer.rkt")
+  (set-field! indicators n-65 (list n-63 n-64))
+  (send n-65 init-point! 39)
+  (send*
+   n-66
+   (init-color! "DarkRed")
+   (init-node! n-68)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-67
+   (init-color! "DarkGray")
+   (init-node! n-68)
+   (init-position! 1)
+   (init-show?! #t))
+  (send n-68 init-test-module n-19)
+  (send n-68 init-name! "file.rkt")
+  (set-field! indicators n-68 (list n-66 n-67))
+  (send n-68 init-point! 57)
+  (send*
+   n-69
+   (init-color! "DarkRed")
+   (init-node! n-71)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-70
+   (init-color! "DarkGray")
+   (init-node! n-71)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-71 init-name! "git-log-grammar.rkt")
+  (set-field! indicators n-71 (list n-69 n-70))
+  (send n-71 init-point! 72)
+  (send*
+   n-72
+   (init-color! "DarkRed")
+   (init-node! n-74)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-73
+   (init-color! "DarkGray")
+   (init-node! n-74)
+   (init-position! 1)
+   (init-show?! #t))
+  (send n-74 init-test-module n-22)
+  (send n-74 init-name! "git.rkt")
+  (set-field! indicators n-74 (list n-72 n-73))
+  (send n-74 init-point! 98)
+  (send*
+   n-75
+   (init-color! "DarkRed")
+   (init-node! n-77)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-76
+   (init-color! "DarkGray")
+   (init-node! n-77)
+   (init-position! 1)
+   (init-show?! #t))
+  (send n-77 init-test-module n-10)
+  (send n-77 init-name! "project.rkt")
+  (set-field! indicators n-77 (list n-75 n-76))
+  (send n-77 init-point! 112)
+  (send*
+   n-78
+   (init-color! "DarkRed")
+   (init-node! n-80)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-79
+   (init-color! "DarkGray")
+   (init-node! n-80)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-80 init-name! "segment.rkt")
+  (set-field! indicators n-80 (list n-78 n-79))
+  (send n-80 init-point! 130)
+  (send*
+   n-81
+   (init-color! "DarkRed")
+   (init-node! n-83)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-82
+   (init-color! "DarkGray")
+   (init-node! n-83)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-83 init-name! "serialization.rkt")
+  (set-field! indicators n-83 (list n-81 n-82))
+  (send n-83 init-point! 148)
+  (send*
+   n-84
+   (init-color! "DarkRed")
+   (init-node! n-86)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-85
+   (init-color! "DarkGray")
+   (init-node! n-86)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-86 init-name! "syntax.rkt")
+  (set-field! indicators n-86 (list n-84 n-85))
+  (send n-86 init-point! 172)
+  (send n-87 init-name! "edsl")
+  (set-field! indicators n-87 (list))
+  (send n-87 init-point! 189)
+  (send n-87 init-children! (list n-90 n-93 n-96))
+  (send*
+   n-88
+   (init-color! "DarkRed")
+   (init-node! n-90)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-89
+   (init-color! "DarkGray")
+   (init-node! n-90)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-90 init-name! "absorber.rkt")
+  (set-field! indicators n-90 (list n-88 n-89))
+  (send n-90 init-point! 9)
+  (send*
+   n-91
+   (init-color! "DarkRed")
+   (init-node! n-93)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-92
+   (init-color! "DarkGray")
+   (init-node! n-93)
+   (init-position! 1)
+   (init-show?! #t))
+  (send n-93 init-test-module n-4)
+  (send n-93 init-name! "edsl.rkt")
+  (set-field! indicators n-93 (list n-91 n-92))
+  (send n-93 init-point! 32)
+  (send*
+   n-94
+   (init-color! "DarkRed")
+   (init-node! n-96)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-95
+   (init-color! "DarkGray")
+   (init-node! n-96)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-96 init-name! "utils.rkt")
+  (set-field! indicators n-96 (list n-94 n-95))
+  (send n-96 init-point! 51)
+  (send*
+   n-97
+   (init-color! "DarkRed")
+   (init-node! n-99)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-98
+   (init-color! "DarkGray")
+   (init-node! n-99)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-99 init-name! "constants.rkt")
+  (set-field! indicators n-99 (list n-97 n-98))
+  (send n-99 init-point! 683)
+  (send*
+   n-100
+   (init-color! "DarkRed")
+   (init-node! n-102)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-101
+   (init-color! "DarkGray")
+   (init-node! n-102)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-102 init-name! "epc.rkt")
+  (set-field! indicators n-102 (list n-100 n-101))
+  (send n-102 init-point! 699)
+  (send*
+   n-103
+   (init-color! "DarkRed")
+   (init-node! n-105)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-104
+   (init-color! "DarkGray")
+   (init-node! n-105)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-105 init-name! "remote-procedures.rkt")
+  (set-field! indicators n-105 (list n-103 n-104))
+  (send n-105 init-point! 709)
+  (send*
+   n-106
+   (init-color! "DarkRed")
+   (init-node! n-108)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-107
+   (init-color! "DarkGray")
+   (init-node! n-108)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-108 init-name! "sg-epc.rkt")
+  (set-field! indicators n-108 (list n-106 n-107))
+  (send n-108 init-point! 733)
+  (send*
+   n-109
+   (init-color! "DarkRed")
+   (init-node! n-111)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-110
+   (init-color! "DarkGray")
+   (init-node! n-111)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-111 init-name! "srcgraph.el")
+  (set-field! indicators n-111 (list n-109 n-110))
+  (send n-111 init-point! 746)
+  (send*
+   n-112
+   (init-color! "DarkRed")
+   (init-node! n-114)
+   (init-position! 0)
+   (init-show?! #f))
+  (send*
+   n-113
+   (init-color! "DarkGray")
+   (init-node! n-114)
+   (init-position! 1)
+   (init-show?! #f))
+  (send n-114 init-name! "tt.rkt")
+  (set-field! indicators n-114 (list n-112 n-113))
+  (send n-114 init-point! 760)
+  n-0)
