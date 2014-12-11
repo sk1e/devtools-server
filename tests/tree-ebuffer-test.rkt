@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require ss/racket/class
+         racket/pretty
          
          rackunit
          rackunit/text-ui
@@ -8,33 +9,27 @@
          "../tree/ebuffer.rkt"
          "../tree/edsl/edsl.rkt"
          "../tree/edsl/utils.rkt"
-         "../backend/specifier.rkt"
          "../backend/buffer.rkt"
+         "../backend/emacs.rkt"
          "../constants.rkt"
          )
 
 
 
 
-(define ebuffer-root-refine-mixin
-  (mixin (ebuffer:root<%>) ()
-    (super-new)
-    
-    (field [test-tree-buffer (make-buffer "ebuffer-tree-buffer")])
-    
-    ))
 
 (define ebuffer-node-refine-mixin
-  (mixin (ebuffer:node<%> backend-specifier<%>) ()
+  (mixin (ebuffer:node<%>) ()
     (super-new)
 
     
-    (inherit get-backend root)
+    (inherit root)
     (inherit-field sym)
     
     (define/override (get-name) (symbol->string sym))
 
-    (define/override (tree-buffer) (get-backend (get-field test-tree-buffer (root))))
+    (define/override (tree-buffer) 
+      (get-field project-buffer (emacs)))
     
         
     ))
@@ -46,27 +41,27 @@
     
     (define/override (post-select!) (void))))
 
+(define leaf% (class-from-mixins ebuffer:leaf-final-sum
+                                 symboled-node
+                                 symbol-inspected-node
+                                 ebuffer-node-refine
+                                 ebuffer-descendant-refine))
+
+(define intr% (class-from-mixins ebuffer:intr-final-sum
+                                 symboled-node
+                                 symbol-inspected-node
+                                 ebuffer-node-refine
+                                 ebuffer-descendant-refine))
+
+(define root% (class-from-mixins ebuffer:root-final-sum
+                                 symboled-node
+                                 symbol-inspected-node
+                                 ebuffer-node-refine))
+
 (with-nodes
- #:leaf (class-from-mixins emulated-backend
-                           ebuffer:leaf-final-sum
-                           symboled-node
-                           symbol-inspected-node
-                           ebuffer-node-refine
-                           ebuffer-descendant-refine)
- 
- #:intr (class-from-mixins emulated-backend
-                           ebuffer:intr-final-sum
-                           symboled-node
-                           symbol-inspected-node
-                           ebuffer-node-refine
-                           ebuffer-descendant-refine)
- 
- #:root (class-from-mixins emulated-backend
-                           ebuffer:root-final-sum
-                           symboled-node
-                           symbol-inspected-node
-                           ebuffer-node-refine
-                           ebuffer-root-refine)
+ #:leaf leaf%
+ #:intr intr%
+ #:root root%
 
 
  (run-tests
@@ -165,40 +160,43 @@
     )
 
 
+   ;; (send (get-field project-buffer (emacs)) clear-buffer!)
+   ;; (displayln (send (get-field+ (emacs) project-buffer content) bs-no-properties))
 
+   ;; (displayln "clear-subtree! -----")
    
-   (test-tree-state-modifications
-    #:name "clear-subtree!"
-    #:root-initializer (method init-tree-buffer!)
-    #:key (compose (field-getter content) (method tree-buffer))
+   ;; (test-tree-state-modifications
+   ;;  #:name "clear-subtree!"
+   ;;  #:root-initializer (method init-tree-buffer!)
+   ;;  #:key (compose (field-getter content) (method tree-buffer))
     
-    (root-0 leaf-1 
-            leaf-2 
-            (inter-3 leaf-31 
-                     leaf-32 <- clear-subtree!
-                     leaf-33)
-            leaf-4)
+   ;;  (root-0 leaf-1 
+   ;;          leaf-2 
+   ;;          (inter-3 leaf-31 
+   ;;                   leaf-32 <- clear-subtree!
+   ;;                   leaf-33)
+   ;;          leaf-4)
 
 
-     (root-0 leaf-1 
-             leaf-2 
-             (inter-3 <- clear-subtree!
-                      leaf-31 
-                      leaf-33)
-             leaf-4)
+   ;;  (root-0 leaf-1 
+   ;;          leaf-2 
+   ;;          (inter-3 <- clear-subtree!
+   ;;                   leaf-31 
+   ;;                   leaf-33)
+   ;;          leaf-4)
 
 
-     (root-0 leaf-1 
-             leaf-2 <- clear-subtree!
-             leaf-4)
+   ;;  (root-0 leaf-1 
+   ;;          leaf-2 <- clear-subtree!
+   ;;          leaf-4)
 
 
-     (root-0 leaf-1 
-             leaf-4 <- clear-subtree!)
+   ;;  (root-0 leaf-1 
+   ;;          leaf-4 <- clear-subtree!)
 
-     (root-0 leaf-1)
-     
-     )
+   ;;  (root-0 leaf-1)
+    
+   ;;  )
 
    
 

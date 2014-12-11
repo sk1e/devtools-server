@@ -574,6 +574,7 @@
        [check-expr (cond
                     [(attribute key) #'(check-equal? (key current-state-id) (key expected-state-id))]
                     [else #'(check-equal? current-state-id expected-state-id)])])
+
       
       #'(test-case
          test-name

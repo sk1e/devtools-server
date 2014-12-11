@@ -13,7 +13,6 @@
 
 (define ebuffer-tree-indentation 4)
 
-(define project-tree-buffer-name "ftree")
 
 (define selection-background-color "gray19")
 (define execution-foreground-color "DeepSkyBlue")
@@ -31,8 +30,11 @@
 ;(define-values ())
 
 
-(define project-tree-buffer (make-buffer "ftree"))
-(define git-tree-buffer (make-buffer "git-tree"))
+(define project-tree-buffer-name "project-tree")
+(define git-tree-buffer-name "git-tree")
+
+;; (define project-tree-buffer (make-buffer "ftree"))
+;; (define git-tree-buffer (make-buffer "git-tree"))
 
 
 ;(define-buffer project-tree-buffer "ftree")

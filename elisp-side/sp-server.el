@@ -9,7 +9,7 @@
 
 (defun sp:server-start ()
   (setq epc:accept-process-timeout 2000)
-  (setq sp:epc (epc:start-epc "~/racket/bin/racket" '("~/Projects/devtools/remote-procedures.rkt")))
+  (setq sp:epc (epc:start-epc "~/racket/bin/racket" (list (format "~/Projects/%s/remote-procedures.rkt" devtools-dir))))
   (setq epc:accept-process-timeout 100)
   (sp:call-procedure/call-callback init-indicator-symbols '())
   

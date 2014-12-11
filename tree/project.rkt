@@ -13,9 +13,8 @@
          "file.rkt"
          "ebuffer.rkt"
          "serialization.rkt"
-         "git.rkt"
          "../constants.rkt"
-         "../backend/specifier.rkt"
+         "../backend/emacs.rkt"
          "../backend/buffer.rkt")
 
 
@@ -43,23 +42,22 @@
 
 
 (define node<%>
-  (interface (file:node<%> ebuffer:node<%> backend-specifier<%>)
+  (interface (file:node<%> ebuffer:node<%>)
     [project-path (->m path-string?)]
     ))
 
 (define node-mixin
-  (mixin (file:node<%> ebuffer:node<%> backend-specifier<%>) (node<%>)
+  (mixin (file:node<%> ebuffer:node<%>) (node<%>)
     (super-new)
     
     (inherit-field name)
 
-    (inherit get-backend)
 
     (abstract project-path)
 
     (define/override (get-name) (path->string name))
     
-    (define/override (tree-buffer) (get-backend const:project-tree-buffer))
+    (define/override (tree-buffer) (get-field project-buffer (emacs)))
 
 
 
@@ -87,8 +85,7 @@
 
     (inherit-field parent name)
     
-    (inherit direct-call
-             select-as-new!
+    (inherit select-as-new!
              clear-solo!
              insert/shift-solo!
              mark-as-selected!
@@ -125,12 +122,12 @@
     
     
     (define/public (delete!)
-      (when (equal? 't (direct-call 'yes-or-no-p (format "delete ~a?" (path->string (absolute-path)))))
+      (when (equal? 't (send (emacs) direct-call 'yes-or-no-p (format "delete ~a?" (path->string (absolute-path)))))
         (remove-from-tree!)
         (remove-file-or-directory!)))
     
     (define/public (rename!)
-      (rename-desc! (direct-call 'read-string "rename to: " (get-name))))
+      (rename-desc! (send (emacs) direct-call 'read-string "rename to: " (get-name))))
 
 
     (define/public (rename-desc! new-name)
@@ -161,15 +158,14 @@
 
     (inherit-field children)
 
-    (inherit push-child!
-             get-backend)
+    (inherit push-child!)
 
-    (define/override (child-directory%) (get-backend directory-container))
+    (define/override (child-directory%) directory%)
 
     (define/override (child-file% name)
       (match name
-        [(regexp #rx"[.]rkt$") (get-backend module-container)]
-        [_ (get-backend file-container)]))
+        [(regexp #rx"[.]rkt$") module%]
+        [_ file%]))
     
     (define/public (add-project-node! node)
       (push-child! node)
@@ -199,10 +195,10 @@
     [current-running-module (->m runnable-leaf?)]
     [run-other-if-left! (->m void?)]
 
-    [initialize-git-repository! (->m void?)]
+    ;; [initialize-git-repository! (->m void?)]
     [get-name-header (->m buffer-string?)]
     [switch-to-current-project-node! (->m void?)]
-    [reload-project! (->m void?)]
+    ;; [reload-project! (->m void?)]
     ))
 
 
@@ -212,7 +208,8 @@
     (super-new)
 
     (field [test-directory #f]
-           [git-root #f])
+           ;; [git-root #f]
+           )
     
     (inherit-field current-node name parent)
     
@@ -223,7 +220,6 @@
              absolute-path
              node-identifier
              new-directory
-             get-backend
              add-project-node!)
 
     
@@ -246,15 +242,15 @@
                                                                        :family "Liberation Mono"
                                                                        :foreground "CornflowerBlue"))))))
 
-    (define/override (pre-tree-insert!)
-      (super pre-tree-insert!)      
-      (send (tree-buffer) set-header! (cond
-                                       [git-root (send (get-name-header) concat (send git-root header-suffix))]
-                                       [else (get-name-header)])))
+    ;; (define/override (pre-tree-insert!)
+    ;;   (super pre-tree-insert!)      
+    ;;   (send (tree-buffer) set-header! (cond
+    ;;                                    [git-root (send (get-name-header) concat (send git-root header-suffix))]
+    ;;                                    [else (get-name-header)])))
 
 
     (define/public (switch-to-current-project-node!)
-      (send+ current-node (leaf-buffer) (switch-to-buffer!)))
+      (send (get-field buffer current-node) switch-to-buffer!))
     
     (define/public (get-name-header)
       (make-buffer-string ((string-append " " (get-name))
@@ -262,15 +258,11 @@
     
 
 
-    (define/public (initialize-git-repository!)
-      (set! git-root (new (git-root%)))
-      (send git-root initialize-repository! this))
+    ;; (define/public (initialize-git-repository!)
+    ;;   (set! git-root (new (git-root%)))
+    ;;   (send git-root initialize-repository! this))
     
-    (define (git-root%) (get-backend git-root-container))
     
-    (define git-root-container (new backend-container%
-                                    [emulated git:emulated-root%]
-                                    [emacs git:emacs-root%]))
     
 
     
@@ -284,20 +276,18 @@
     (define/public (cache-project!)
       (cache-node! (build-path (absolute-path) const:project-cache-file-name)))
 
-    (define/public (reload-project!)
-      (for-each (compose (method kill!) (method leaf-buffer))
-                (leafs))
-      (send* parent
-        (remove-project! this)
-        (load-project! (path->string name))))
+    ;; (define/public (reload-project!)
+    ;;   (for-each (compose (method kill!) (method leaf-buffer))
+    ;;             (leafs))
+    ;;   (send* parent
+    ;;     (remove-project! this)
+    ;;     (load-project! (path->string name))))
 
     (define/override (project-path) (string->path "/"))
 
-    (define (test-directory%) (get-backend test-directory-container))
-
     (define/public (init-test-directory-if-not!)
       (unless test-directory
-        (set! test-directory (make (test-directory%) [name "tests"]))
+        (set! test-directory (make test-directory% [name "tests"]))
         (add-project-node! test-directory)
         (send test-directory make-directory-if-not!)))
 
@@ -360,8 +350,6 @@
 
 (define leaf<%>
   (interface (file:leaf<%> descendant<%>)
-    [leaf-buffer (->m (is-a?/c buffer<%>))]
-    ;; [init-file-buffer (->m void?)]
     [buffer-name (->m string?)]
     [switch-to-buffer! (->m void?)]
     [modified-indicator (->m ebuffer:indicator?)]
@@ -378,9 +366,7 @@
 
     (inherit absolute-path
              project-path
-             root
-             get-backend
-             deferred-call)
+             root)
     
     (inherit-field parent
                    indicators)
@@ -411,13 +397,12 @@
 
     (define/override (entered-directory) parent)
 
-    (define/public (leaf-buffer) (get-backend buffer))
 
     (define/public (switch-to-buffer!)
-      (deferred-call 'switch-to-buffer (get-field name (leaf-buffer))))
+      (send (emacs) deferred-call 'switch-to-buffer (get-field name buffer)))
 
     (define/public (revert-buffer!)
-      (send (leaf-buffer) revert!))
+      (send buffer revert!))
     
     (define/public (buffer-name)
       (path->string (project-path)))
@@ -431,16 +416,16 @@
     
     (define/override (initialize-project-node!)
       (define name (buffer-name))
-      (set! buffer (make-buffer name))
-      (deferred-call 'pt:init-file-buffer
+      (set! buffer (new (send (emacs) buffer%) [name name]))
+      (send (emacs) deferred-call 'pt:init-file-buffer
                      (path->string (absolute-path))
                      name
                      (buffer-name-font-parts name)))
 
     
     (define/override (pre-rename! new-name)
-      (set! buffer (make-buffer new-name))
-      (deferred-call 'pt:rename-file-buffer
+      (set! buffer (new (send (emacs) buffer%) [name new-name]))
+      (send (emacs) deferred-call 'pt:rename-file-buffer
                      (buffer-name)
                      new-name
                      (buffer-name-font-parts new-name)))
@@ -474,8 +459,7 @@
     
     (inherit-field name)
     
-    (inherit deferred-call
-             absolute-path
+    (inherit absolute-path
              buffer-name
              root
              put-extra-ftf-prop!
@@ -486,8 +470,8 @@
     
     (define/public (run-start! elisp-executor)
       (define exec-buffer-name (format "*exec ~a*" (buffer-name)))
-      (deferred-call 'pt:init-exec-buffer exec-buffer-name)
-      (deferred-call elisp-executor exec-buffer-name (path->string (absolute-path)))
+      (send (emacs) deferred-call 'pt:init-exec-buffer exec-buffer-name)
+      (send (emacs) deferred-call elisp-executor exec-buffer-name (path->string (absolute-path)))
       (mark-as-running!))
 
     
@@ -538,7 +522,6 @@
     (field [tested-module 'uninitialized])
 
     (inherit node-identifier
-             deferred-call
              absolute-path
              run!)
     
@@ -604,7 +587,6 @@
              node-identifier
              switch-to-buffer!
              test-indicator
-             deferred-call
              run!)
     
     (define/override (field-setter-exprs)
@@ -638,8 +620,7 @@
       (send (root) init-test-directory-if-not!)
       
       (define test-dir (get-field test-directory (root)))
-      (init-test-module (make (send test-dir test-module%)
-                          [name (test-name)]))
+      (init-test-module (make module-test% [name (test-name)]))
       
       (send test-dir add-project-node! test-module)
       (send (test-indicator) switch-on!)
@@ -681,52 +662,22 @@
   [intr-final-sum (ebuffer:intr-final-sum      file:intr-sum intr-sum)]
   [root-final-sum (ebuffer:quasiroot-final-sum file:intr-sum root-sum)])
 
-;; tofix too much copy/paste
-(define-inspected-class emacs-file%   (class-from-mixins emacs-backend leaf-final-sum))
-(define-inspected-class emacs-module% (class-from-mixins emacs-backend leaf-final-sum runnable-leaf module-leaf))
-(define-inspected-class emacs-module-test% (class-from-mixins emacs-backend leaf-final-sum runnable-leaf test-leaf))
-(define-inspected-class emacs-directory% (class-from-mixins emacs-backend intr-final-sum))
-(define-inspected-class emacs-root% (class-from-mixins emacs-backend root-final-sum ))
-
-
-(define-inspected-class emulated-file%   (class-from-mixins emulated-backend leaf-final-sum))
-(define-inspected-class emulated-module% (class-from-mixins emulated-backend leaf-final-sum runnable-leaf module-leaf))
-(define-inspected-class emulated-module-test% (class-from-mixins emulated-backend leaf-final-sum runnable-leaf test-leaf))
-(define-inspected-class emulated-directory% (class-from-mixins emulated-backend intr-final-sum))
-(define-inspected-class emulated-root% (class-from-mixins emulated-backend root-final-sum))
 
 
 
-(define module-test-container
-  (new backend-container%
-       [emulated emulated-module-test%]
-       [emacs emacs-module-test%]))
+(define-inspected-class file%        (class-from-mixins leaf-final-sum))
+(define-inspected-class module%      (class-from-mixins leaf-final-sum runnable-leaf module-leaf))
+(define-inspected-class module-test% (class-from-mixins leaf-final-sum runnable-leaf test-leaf))
+(define-inspected-class directory%   (class-from-mixins intr-final-sum))
+(define-inspected-class root%        (class-from-mixins root-final-sum))
 
 
-(define directory-container
-  (new backend-container%
-       [emulated emulated-directory%]
-       [emacs emacs-directory%]))
-
-
-(define module-container
-  (new backend-container%
-       [emulated emulated-module%]
-       [emacs emacs-module%]))
-
-
-
-(define file-container
-  (new backend-container%
-       [emulated emulated-file%]
-       [emacs emacs-file%]))
 
 
 
 
 (define test-directory<%>
   (interface (file:intr<%>)
-    [test-module% (->m (implementation?/c test-leaf<%>))]
     ))
 
 
@@ -736,10 +687,8 @@
 
     (inherit-field parent)
 
-    (inherit node-identifier
-             get-backend)
+    (inherit node-identifier)
 
-    (define/public (test-module%) (get-backend module-test-container))
 
     (define/override (field-setter-exprs)
       (cons `(set-field! parent ,(node-identifier) ,(send parent node-identifier))
@@ -747,13 +696,8 @@
     
     ))
 
-(define-inspected-class emacs-test-directory%    (class-from-mixins emacs-backend intr-final-sum test-directory))
-(define-inspected-class emulated-test-directory% (class-from-mixins emulated-backend    intr-final-sum test-directory))
+(define-inspected-class test-directory% (class-from-mixins intr-final-sum test-directory))
 
-(define test-directory-container
-  (new backend-container%
-       [emulated emulated-test-directory%]
-       [emacs emacs-test-directory%]))
 
 
 (define projects-directory<%>
@@ -774,14 +718,13 @@
 
 
 (define projects-directory-mixin
-  (mixin (file:intr<%> backend-specifier<%>) (projects-directory<%>)
+  (mixin (file:intr<%>) (projects-directory<%>)
     (super-new)
 
     (field [current-project #f])
     
     (inherit new-directory
              absolute-path
-             direct-call
              remove-child!)
     
     (inherit-field children)
@@ -816,7 +759,7 @@
     
     (define/public (new-project-from-existing-dir! name)
       (when (or (not (cache-exists? name))
-                (equal? 't (direct-call 'yes-or-no-p "there is a cache for this project, make new project anyway? ")))
+                (equal? 't (send (emacs) direct-call 'yes-or-no-p "there is a cache for this project, make new project anyway? ")))
 
         (init-new-project! name)
         
@@ -865,23 +808,11 @@
 
 
 
-
-(define emacs-projects-directory%
-  (class (projects-directory-mixin (emacs-backend-mixin file:simple-directory%))
+(define projects-directory%
+  (class (projects-directory-mixin file:simple-directory%)
     (super-new)
     
-    (define/override (child-directory%) emacs-root%)
-
+    (define/override (child-directory%) root%)
     
     ))
-
-
-(define emulated-projects-directory%
-  (class (projects-directory-mixin (emulated-backend-mixin file:simple-directory%))
-    (super-new)
-
-    (define/override (child-directory%) emulated-root%)
-        
-    ))
-
 

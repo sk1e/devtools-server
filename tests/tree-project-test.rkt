@@ -10,7 +10,6 @@
          
          "../tree/project.rkt"
          "../tree/file.rkt"
-         "../backend/specifier.rkt"
          "../backend/buffer.rkt"
          
          "../tree/edsl/edsl.rkt"
@@ -25,7 +24,7 @@
   (mixin (project:root<%>) ()
     (super-new)
     
-    (field [test-tree-buffer (make-buffer "project-tree-buffer")])
+    (field [test-tree-buffer (new emulated-buffer% [name "project-tree-buffer"])])
     
     ))
 
@@ -35,12 +34,12 @@
 
 
 (define project-node-refine-mixin
-  (mixin (project:node<%> backend-specifier<%>) ()
+  (mixin (project:node<%>) ()
     (super-new)
     
-    (inherit get-backend root)
+    (inherit root)
     
-    (define/override (tree-buffer) (get-backend (get-field test-tree-buffer (root))))
+    (define/override (tree-buffer) (get-field test-tree-buffer (root)))
     
     
     ))
@@ -50,9 +49,9 @@
 
 
 (with-nodes
- #:leaf (node-test-sum-mixin project:emulated-module%)
- #:intr (node-test-sum-mixin project:emulated-directory%)
- #:root (project-root-refine-mixin (node-test-sum-mixin project:emulated-root%))
+ #:leaf (node-test-sum-mixin project:module%)
+ #:intr (node-test-sum-mixin project:directory%)
+ #:root (project-root-refine-mixin (node-test-sum-mixin project:root%))
 
  (run-tests
   (test-suite
@@ -68,7 +67,7 @@
                                    file-3
                                    file-4)))
 
-    (define projects-node (file:new-descendant-from-path project:emulated-projects-directory% "/home/god/"))
+    (define projects-node (file:new-descendant-from-path project:projects-directory% "/home/god/"))
 
     (send projects-node new-project-from-existing-dir! "test-dir")
     (define current-project (get-field current-project projects-node))

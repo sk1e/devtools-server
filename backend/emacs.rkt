@@ -3,33 +3,50 @@
 (require racket/class
          racket/contract
 
-         ;"specifier.rkt"
-         "../sg-epc.rkt")
+         "buffer.rkt"
+         "../constants.rkt"
+         "../sg-epc.rkt"
+         
+         (for-syntax racket/base
+                     racket/syntax))
 
-(provide (all-defined-out))
+
+(provide read-string-param
+         emacs
+         genuine-emacs)
+
+
+(define emulator-ht #hash())
+
+(define-syntax (define-emulation-proc stx)
+  (syntax-case stx ()
+    [(_ (name . params) body ...)
+     (with-syntax ([prefixed-name (format-id #'name "el-~a" (syntax-e #'name))])
+       #'(begin (define (prefixed-name . params)
+                  body ...)
+                (set! emulator-ht (hash-set emulator-ht 'name prefixed-name))))]))
+
+
+
+
+(define yes-or-no-p-param (make-parameter 't))
+(define read-string-param (make-parameter "read string value"))
+
+(define-emulation-proc (yes-or-no-p message)
+  (yes-or-no-p-param))
+
+(define-emulation-proc (read-string message)
+  (read-string-param))
+
+
 
 
 (define emacs<%>
   (interface ()
-    [deferred-call (->*m (symbol?) #:rest (listof any/c) any/c)]
-    [direct-call   (->*m (symbol?) #:rest (listof any/c) any/c)]
-    ))
+    [deferred-call (->*m ((or/c symbol? list?)) #:rest (listof any/c) any/c)]
+    [direct-call   (->*m ((or/c symbol? list?)) #:rest (listof any/c) any/c)]
+    [buffer% (->m (implementation?/c buffer<%>))]))
 
-
-
-(define emacs%
-  (class* object% (emacs<%>)
-    (super-new)
-
-    (define/public (deferred-call proc . args)
-      (apply el-deferred-call proc args))
-
-    (define/public (direct-call proc . args)
-      (apply el-direct-call proc args))
-
-   
-
-    ))
 
 
 
@@ -37,21 +54,40 @@
   (class* object% (emacs<%>)
     (super-new)
 
-    
+    (field [project-buffer (new emulated-buffer% [name const:project-tree-buffer-name])])
 
-    (define/public (deferred-call proc . args)
-      (printf "\nemulated deferred-call of ~a\n" proc))
+    (define/public (deferred-call proc . args) (void))
     
     (define/public (direct-call proc . args)
-      (printf "\nemulated direct-call of ~a\n" proc))
+      (cond
+       [(hash-has-key? emulator-ht proc)
+        (apply (hash-ref emulator-ht proc) args)]
+       [else (printf "direct-call of unimplemented emulation procedure ~a\n" proc)]))
+
+    (define/public (buffer%) emulated-buffer%)
 
     
+    
+    ))
+
+(define genuine-emacs%
+  (class* object% (emacs<%>)
+    (super-new)
+
+    (field [project-buffer (new emacs-buffer% [name const:project-tree-buffer-name])])
+    
+    (define/public (deferred-call proc . args)
+      (apply el-deferred-call proc args))
+
+    (define/public (direct-call proc . args)
+      (apply el-direct-call proc args))
+
+    (define/public (buffer%) emacs-buffer%)
 
     ))
 
-(define emacs (new emacs%))
-(define emulated-emacs (new emulated-emacs%))
 
-;; (define emacs (new backend-container%
-;;                    [emulated (new emulated-emacs%)]
-;;                    [emacs (new emacs%)]))
+(define emulated-emacs (new emulated-emacs%))
+(define genuine-emacs (new genuine-emacs%))
+
+(define emacs (make-parameter emulated-emacs))

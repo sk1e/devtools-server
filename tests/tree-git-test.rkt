@@ -77,7 +77,7 @@
    (define (git-buffer-content) (get-field content (send git-root tree-buffer)))
    (define (git-buffer-header) (get-field header (send git-root tree-buffer)))
    (define (git-commit! message)
-     (parameterize ([read-string-res message])
+     (parameterize ([read-string-param message])
        (send (get-field current-branch git-root) commit!)))
 
    (test-case

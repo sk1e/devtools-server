@@ -11,8 +11,7 @@
          ss/racket/provide
 
          "../backend/buffer.rkt"
-         "../backend/specifier.rkt"
-         ;"../backend/indicator.rkt"
+         "../backend/emacs.rkt"
          
          "../epc.rkt"
          "../constants.rkt"
@@ -554,11 +553,11 @@
 
 
 (define abstract-indicator%
-  (class* (emacs-backend-mixin (serialization:leaf-sum-mixin (base:leaf-sum-mixin object%)))
+  (class* (serialization:leaf-sum-mixin (base:leaf-sum-mixin object%))
     (indicator<%> serialization:node<%>); inspectable<%>)
     (super-new)
 
-    (inherit node-identifier deferred-call)
+    (inherit node-identifier)
     
     (abstract render!
               name
@@ -638,10 +637,10 @@
     
     (define/public (produce-el-images)
       (for ([color (possible-colors)])
-        (deferred-call `(lambda () (defimage ,(picture-symbol color)
-                                               ((:type png :file ,(path->string (picture-path color)) :ascent 80)))))))
+        (send (emacs) deferred-call `(lambda () (defimage ,(picture-symbol color)
+                                                  ((:type png :file ,(path->string (picture-path color)) :ascent 80)))))))
     
-        
+    
     ))
 
 

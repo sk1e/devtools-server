@@ -13,7 +13,7 @@
          ss/racket/syntax
 
          "../sg-epc.rkt"
-         "specifier.rkt"
+         ;"specifier.rkt"
 
          (for-syntax racket/base
                      
@@ -27,7 +27,6 @@
          buffer<%>
          emulated-buffer%
          emacs-buffer%
-         make-buffer
 
          chunk-binary-search
          
@@ -179,6 +178,7 @@
     [concat (->*m () #:rest (listof buffer-string?) buffer-string?)]
     [bs-substring (->*m (natural-number/c) (natural-number/c) buffer-string?)]
     [bs-length (->m natural-number/c)]
+    [bs-no-properties (->m string?)]
     [propertize (->m hash? buffer-string?)]
     ))
 
@@ -218,7 +218,9 @@
       (make buffer-string% [chunk-vector (vector-map (curryr (method propertize) props)
                                                      chunk-vector)]))
     
-    
+
+    (define/public (bs-no-properties)
+      (apply string-append (map (field-getter value) (vector->list chunk-vector))))
 
     (define/public (bs-length)
       (define len (vector-length chunk-vector))
@@ -384,6 +386,7 @@
       (set! content (new buffer-string%)))
     
     (define/override (insert buffer-string  #:point [pnt point])
+      ;; (printf "insert: ~v\n" (send buffer-string bs-no-properties))
       (let ([pnt (sub1 pnt)])
         (with-method ([substring-content (content bs-substring)])
           (set! content (send (substring-content 0 pnt)
@@ -400,10 +403,12 @@
       (printf "\nWARNING, registered attempt to call unimplemented buffer procedure `~a'\n" proc))
     
     (define/override (delete-region from to)
+      ;; (printf "from ~a to ~a\n" from to)
+      ;; (printf "content:\n~a\n" (send content bs-no-properties))
       (set! content (send (substring-content 1 from)
                           concat
                           (substring-content to)))
-      
+      ;; (printf "after:\n~a\n" (send content bs-no-properties))
       (set! point (- point (- to from))))
 
     (define/override (put-text-property from to prop value)
@@ -499,10 +504,6 @@
 
 
 
-(define (make-buffer name)
-  (new backend-container%
-       [emulated (new emulated-buffer% [name name])]
-       [emacs    (new emacs-buffer%    [name name])]))
 
 
 

@@ -7,9 +7,11 @@
          "constants.rkt"
          
          "tree/file.rkt"
-         ;"tree/final.rkt"
          "tree/project.rkt"
-         "tree/ebuffer.rkt")
+         "tree/ebuffer.rkt"
+
+         "backend/emacs.rkt"
+         )
 
 
 ;; (define projects-node (file:new-descendant-from-path file:simple-directory% const:projects-path))
@@ -23,7 +25,7 @@
 ;; (send projects-node push-new-directory "ss")
 
 
-(define projects-node (file:new-descendant-from-path project:emacs-projects-directory% const:projects-path))
+(define projects-node (file:new-descendant-from-path project:projects-directory% const:projects-path))
 
 
 (produce-epc-methods
@@ -105,7 +107,7 @@
 ;;                       project-root))
 
 
-
-(send server serve)
+(parameterize ([emacs genuine-emacs])
+  (send server serve))
 
 
