@@ -17,6 +17,14 @@
 
 
 
+(define ebuffer-root-refine-mixin
+  (mixin (ebuffer:root<%>) ()
+    (super-new)
+    
+    (field [test-tree-buffer (new emulated-buffer% [name "project-tree-buffer"])])
+    
+    ))
+
 
 (define ebuffer-node-refine-mixin
   (mixin (ebuffer:node<%>) ()
@@ -29,7 +37,7 @@
     (define/override (get-name) (symbol->string sym))
 
     (define/override (tree-buffer) 
-      (get-field project-buffer (emacs)))
+      (get-field test-tree-buffer (root)))
     
         
     ))
@@ -56,7 +64,8 @@
 (define root% (class-from-mixins ebuffer:root-final-sum
                                  symboled-node
                                  symbol-inspected-node
-                                 ebuffer-node-refine))
+                                 ebuffer-node-refine
+                                 ebuffer-root-refine))
 
 (with-nodes
  #:leaf leaf%
@@ -165,38 +174,38 @@
 
    ;; (displayln "clear-subtree! -----")
    
-   ;; (test-tree-state-modifications
-   ;;  #:name "clear-subtree!"
-   ;;  #:root-initializer (method init-tree-buffer!)
-   ;;  #:key (compose (field-getter content) (method tree-buffer))
+   (test-tree-state-modifications
+    #:name "clear-subtree!"
+    #:root-initializer (method init-tree-buffer!)
+    #:key (compose (field-getter content) (method tree-buffer))
     
-   ;;  (root-0 leaf-1 
-   ;;          leaf-2 
-   ;;          (inter-3 leaf-31 
-   ;;                   leaf-32 <- clear-subtree!
-   ;;                   leaf-33)
-   ;;          leaf-4)
+    (root-0 leaf-1 
+            leaf-2 
+            (inter-3 leaf-31 
+                     leaf-32 <- clear-subtree!
+                     leaf-33)
+            leaf-4)
 
 
-   ;;  (root-0 leaf-1 
-   ;;          leaf-2 
-   ;;          (inter-3 <- clear-subtree!
-   ;;                   leaf-31 
-   ;;                   leaf-33)
-   ;;          leaf-4)
+    (root-0 leaf-1 
+            leaf-2 
+            (inter-3 <- clear-subtree!
+                     leaf-31 
+                     leaf-33)
+            leaf-4)
 
 
-   ;;  (root-0 leaf-1 
-   ;;          leaf-2 <- clear-subtree!
-   ;;          leaf-4)
+    (root-0 leaf-1 
+            leaf-2 <- clear-subtree!
+            leaf-4)
 
 
-   ;;  (root-0 leaf-1 
-   ;;          leaf-4 <- clear-subtree!)
+    (root-0 leaf-1 
+            leaf-4 <- clear-subtree!)
 
-   ;;  (root-0 leaf-1)
+    (root-0 leaf-1)
     
-   ;;  )
+    )
 
    
 
