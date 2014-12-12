@@ -80,6 +80,7 @@
  switch-on-indicator! switch-off-indicator!
  create-test! toggle-test! delete-test!
  run-module-at-foreground! run-test-at-background!
+ interrupt-execution!
  test-buffer-name)
 
 

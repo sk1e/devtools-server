@@ -440,6 +440,7 @@
   (interface (leaf<%>)
     [run! (->m symbol? void?)]
     [run-start! (->m symbol? void?)]
+    [interrupt-execution! (->m void?)]
     [mark-as-running! (->m void?)]
     [mark-as-not-running! (->m void?)]
 
@@ -480,6 +481,10 @@
         (send* (root)
           (push-running-module! (cons this elisp-executor))
           (run-other-if-left!))))
+
+
+    (define/public (interrupt-execution!)
+      (send (emacs) deferred-call 'pt:interrupt-process))
     
         
     (define/public (mark-as-running!)
@@ -645,15 +650,12 @@
 
 
 
-
 (define-composed-mixins
   [descendant-sum (node descendant)]
  
   [root-sum       (node ancestor root)]
   [intr-sum       (descendant-sum ancestor intr)]
   [leaf-sum       (descendant-sum leaf)])
-
-
 
 
 (define-composed-mixins  
@@ -663,8 +665,6 @@
   [root-final-sum (ebuffer:quasiroot-final-sum file:intr-sum root-sum)])
 
 
-
-
 (define-inspected-class file%        (class-from-mixins leaf-final-sum))
 (define-inspected-class module%      (class-from-mixins leaf-final-sum runnable-leaf module-leaf))
 (define-inspected-class module-test% (class-from-mixins leaf-final-sum runnable-leaf test-leaf))
@@ -672,13 +672,10 @@
 (define-inspected-class root%        (class-from-mixins root-final-sum))
 
 
-
-
-
-
 (define test-directory<%>
   (interface (file:intr<%>)
     ))
+
 
 
 (define test-directory-mixin
@@ -699,7 +696,6 @@
 (define-inspected-class test-directory% (class-from-mixins intr-final-sum test-directory))
 
 
-
 (define projects-directory<%>
   (interface (file:intr<%>)
     [init-new-project! (->m string? void?)]
@@ -713,8 +709,6 @@
 
     [remove-project! (->m (is-a?/c root<%>) void?)]
     ))
-
-
 
 
 (define projects-directory-mixin

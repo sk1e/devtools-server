@@ -30,6 +30,7 @@
    
    pt:run-test-at-background!
    pt:run-module-at-foreground!
+   pt:interrupt-execution!
    
    pt:initialize-git-repository!
    pt:switch-to-current-project-node!
@@ -73,6 +74,7 @@
     
     (define-key pt-map (kbd "s-\\") #'pt:run-module-at-foreground!)
     (define-key pt-map (kbd "s-|") #'pt:run-test-at-background!)
+    (define-key pt-map (kbd "C-\\") #'pt:interrupt-execution!)
     
     (define-key pt-map (kbd "s-g") #'gt:switch-to-git-tree-buffer!)
     (define-key pt-map (kbd "M-c") #'gt:commit!)
@@ -242,6 +244,13 @@
   (timer-activate pt:proc-inspector-timer)
   
   (select-window (display-buffer name)))
+
+
+(defun pt:interrupt-process ()
+  (interrupt-process pt:exec-proc))
+
+;(kill-process)
+
 
 
 (defun show-test-exec-buffer ()
