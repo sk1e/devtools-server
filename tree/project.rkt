@@ -283,7 +283,8 @@
     ;;     (remove-project! this)
     ;;     (load-project! (path->string name))))
 
-    (define/override (project-path) (string->path "/"))
+    (define/override (project-path) 
+      (build-path "/" name))
 
     (define/public (init-test-directory-if-not!)
       (unless test-directory
@@ -607,7 +608,7 @@
       (set-field! tested-module test-module this))
     
     (define/public (test-name)
-      (string-append (string-join (match (map path->string (cdr (file:path->list (project-path))))
+      (string-append (string-join (match (map path->string (cddr (file:path->list (project-path))))
                                     [(list x ... last)
                                      (append x (list (substring last
                                                                 0
