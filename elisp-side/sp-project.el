@@ -6,7 +6,8 @@
 (defconst pt:projects-path  "~/Projects")
 
 (define-remote/interactive/callback-calling-procedures
-  (pt:select-by-name!
+  (pt:new-project!
+   pt:select-by-name!
    
    pt:select-next-leaf!
    pt:select-prev-leaf!

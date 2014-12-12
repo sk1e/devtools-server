@@ -703,7 +703,7 @@
     [init-new-project! (->m string? void?)]
     
     [new-project-from-existing-dir! (->m string? void?)]
-    [new-project! (->m string? void?)]
+    [new-project! (->m void?)]
     
     [read-project (->m string? (is-a?/c root<%>))]
     [load-project! (->m string? void?)]
@@ -747,11 +747,24 @@
       (set! project-ht (hash-remove project-ht (path->string (get-field name project)))))
     
     
-    (define/public (new-project! name)
-      (init-new-project! name)
-      (send* current-project
-        (make-directory!)
-        (init-tree-buffer)))
+    (define/public (new-project!)
+      (define project-name (send (emacs) direct-call 'read-string "project name: "))
+      (cond
+       [(directory-exists? (build-path (absolute-path) project-name))
+        (error 'bad-name "such project already exists")]
+       
+       [else
+        (define first-file (send (emacs) direct-call 'read-string "first file name: "))
+        
+        (make-directory (build-path (absolute-path) project-name))
+        (call-with-output-file (build-path (absolute-path) project-name first-file) void)
+        (new-project-from-existing-dir! project-name)
+        
+        ;; (init-new-project! project-name)
+        ;; (send* current-project
+        ;;   (make-directory!)
+        ;;   (init-tree-buffer!))
+        ]))
     
     (define/public (new-project-from-existing-dir! name)
       (when (or (not (cache-exists? name))
