@@ -242,11 +242,12 @@
                                                                        :family "Liberation Mono"
                                                                        :foreground "CornflowerBlue"))))))
 
-    ;; (define/override (pre-tree-insert!)
-    ;;   (super pre-tree-insert!)      
-    ;;   (send (tree-buffer) set-header! (cond
-    ;;                                    [git-root (send (get-name-header) concat (send git-root header-suffix))]
-    ;;                                    [else (get-name-header)])))
+    (define/override (pre-tree-insert!)
+      (super pre-tree-insert!)
+      (send (tree-buffer) set-header! (get-name-header)))
+      ;; (send (tree-buffer) set-header! (cond
+      ;;                                  [git-root (send (get-name-header) concat (send git-root header-suffix))]
+      ;;                                  [else (get-name-header)])))
 
 
     (define/public (switch-to-current-project-node!)
