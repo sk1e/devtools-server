@@ -110,9 +110,9 @@
 
 
 
-
-(global-set-key [f1] (lambda () (interactive) (sp:call-procedure/call-callback pt:load-project! '("devtools"))))
-(global-set-key [f2] (lambda () (interactive) (sp:call-procedure/call-callback pt:load-project! '("emacs-extensions"))))
+(global-set-key [f1] (lambda () (interactive) (sp:call-procedure/call-callback pt:load-project! '("unicf"))))
+(global-set-key [f2] (lambda () (interactive) (sp:call-procedure/call-callback pt:load-project! '("devtools"))))
+(global-set-key [f3] (lambda () (interactive) (sp:call-procedure/call-callback pt:load-project! '("emacs-extensions"))))
 
 (add-hook 'kill-emacs-hook (remote-method pt:cache-projects!))
 
