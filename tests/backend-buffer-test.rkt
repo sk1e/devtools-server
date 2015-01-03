@@ -58,17 +58,17 @@
                                '(4 5 6 7)))])
      (test-case
       "property-equal?"     
-      (check-true (property-equal? ht-1 ht-1))
-      (check-true (property-equal? ht-1 ht-2))
-      (check-false (property-equal? ht-1 ht-3))
-      (check-false (property-equal? ht-1 ht-4))
-      (check-false (property-equal? ht-1 ht-5)))
+      (check-true (equal? ht-1 ht-1))
+      (check-true (equal? ht-1 ht-2))
+      (check-false (equal? ht-1 ht-3))
+      (check-false (equal? ht-1 ht-4))
+      (check-false (equal? ht-1 ht-5)))
 
      (test-case
       "property-update"
-      (check-true (property-equal? (property-update ht-1 ht-3) ht-3))
-      (check-true (property-equal? (property-update ht-4 ht-1) ht-2))
-      (check-true (property-equal? (property-update ht-5 ht-1) ht-5)))
+      (check-true (equal? (property-update ht-1 ht-3) ht-3))
+      (check-true (equal? (property-update ht-4 ht-1) ht-2))
+      (check-true (equal? (property-update ht-5 ht-1) ht-5)))
      )
      
   

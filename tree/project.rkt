@@ -805,7 +805,7 @@
         (send* current-project
           (insert-tree!)
           (init-file-buffers!))
-        (send (get-field current-node current-project) mark-as-selected!)]))
+        (send (get-field current-node current-project) select!)]))
     
     
     

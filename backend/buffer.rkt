@@ -31,7 +31,7 @@
          chunk-binary-search
          
          make-buffer-string
-         property-equal?
+         ;; property-equal?
          property-update)
 
 
@@ -42,16 +42,16 @@
 
 (define (buffer-string-chunk? v) (is-a? v buffer-string-chunk<%>))
 
-(define/contract (property-equal? prop1 prop2)
-  (-> hash? hash? boolean?)
-  (and (set=? (list->set (hash-keys prop1))
-              (list->set (hash-keys prop2)))
-       (let equal-values? ([keys (hash-keys prop1)])
-         (match keys
-           [(cons x xs) (and (equal? (hash-ref prop1 x)
-                                     (hash-ref prop2 x))
-                             (equal-values? xs))]
-           ['() #t]))))
+;; (define/contract (property-equal? prop1 prop2)
+;;   (-> hash? hash? boolean?)
+;;   (and (set=? (list->set (hash-keys prop1))
+;;               (list->set (hash-keys prop2)))
+;;        (let equal-values? ([keys (hash-keys prop1)])
+;;          (match keys
+;;            [(cons x xs) (and (equal? (hash-ref prop1 x)
+;;                                      (hash-ref prop2 x))
+;;                              (equal-values? xs))]
+;;            ['() #t]))))
 
 (define/contract (property-update source-prop updating-prop)
   (-> hash? hash? hash?)
@@ -88,7 +88,7 @@
     
     (define/public (equal-to? other recur)
       (unless (and (equal? value (get-field value other))
-                   (property-equal? properties (get-field properties other))
+                   (equal? properties (get-field properties other))
                    (equal? end-point (get-field end-point other)))
         
         (printf ">>>>>>>>>>>>>>\n~v ~v ~v\n~v ~v ~v\n"
@@ -96,7 +96,7 @@
                 (get-field value other) (get-field properties other) (get-field end-point other)))
       
       (and (equal? value (get-field value other))
-           (property-equal? properties (get-field properties other))
+           (equal? properties (get-field properties other))
            (equal? end-point (get-field end-point other))))
     
     
