@@ -91,3 +91,12 @@
 
 (provide 'sp-server)
 
+
+;; (make-network-process 
+;; :name "qwe"
+;; :buffer "*qwe*"
+;; :service "/home/god/socket-test"
+;; :server "/home/god/socket-test"
+;; :family 'local
+;; :remote "/home/god/socket-test"
+;; )

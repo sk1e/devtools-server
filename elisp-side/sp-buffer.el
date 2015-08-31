@@ -35,6 +35,8 @@
     (let ((buffer-read-only nil))
       (apply proc args))))
 
+;; TOFIX dirty things
+
 (defun put-text-property/eval (start end property value)
   "`put-text-property' + eval support in property value"
   (put-text-property start end property (proc-property-value value)))

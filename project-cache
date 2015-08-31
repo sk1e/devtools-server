@@ -112,7 +112,7 @@
       (n-111 (new module%)))
   (set-field! test-directory n-0 n-1)
   (send n-0 init-name! "devtools")
-  (set-field! current-node n-0 n-13)
+  (set-field! current-node n-0 n-93)
   (send n-0 init-children!
     (list n-1 n-23 n-33 n-37 n-78 n-96 n-99 n-102 n-105 n-108 n-111))
   (set-field! parent n-1 n-0)
@@ -358,8 +358,8 @@
    (init-node! n-49)
    (init-position! 1)
    (init-show?! #t))
-  (send n-49 init-test-module n-16)
-  (send n-49 init-name! "file.rkt")
+  (send n-49 init-test-module n-13)
+  (send n-49 init-name! "project.rkt")
   (set-field! indicators n-49 (list n-47 n-48))
   (send n-49 init-point! 57)
   (send*
@@ -373,10 +373,11 @@
    (init-color! "DarkGray")
    (init-node! n-52)
    (init-position! 1)
-   (init-show?! #f))
-  (send n-52 init-name! "git-log-grammar.rkt")
+   (init-show?! #t))
+  (send n-52 init-test-module n-16)
+  (send n-52 init-name! "file.rkt")
   (set-field! indicators n-52 (list n-50 n-51))
-  (send n-52 init-point! 72)
+  (send n-52 init-point! 75)
   (send*
    n-53
    (init-color! "DarkRed")
@@ -388,11 +389,10 @@
    (init-color! "DarkGray")
    (init-node! n-55)
    (init-position! 1)
-   (init-show?! #t))
-  (send n-55 init-test-module n-10)
-  (send n-55 init-name! "git.rkt")
+   (init-show?! #f))
+  (send n-55 init-name! "git-log-grammar.rkt")
   (set-field! indicators n-55 (list n-53 n-54))
-  (send n-55 init-point! 98)
+  (send n-55 init-point! 90)
   (send*
    n-56
    (init-color! "DarkRed")
@@ -405,10 +405,10 @@
    (init-node! n-58)
    (init-position! 1)
    (init-show?! #t))
-  (send n-58 init-test-module n-13)
-  (send n-58 init-name! "project.rkt")
+  (send n-58 init-test-module n-10)
+  (send n-58 init-name! "git.rkt")
   (set-field! indicators n-58 (list n-56 n-57))
-  (send n-58 init-point! 112)
+  (send n-58 init-point! 116)
   (send*
    n-59
    (init-color! "DarkRed")
