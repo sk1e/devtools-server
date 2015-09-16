@@ -10,15 +10,18 @@
          ss/racket/class
          ss/racket/provide
 
+         serp
+
          "../backend/buffer.rkt"
+         "../backend/buffer-string.rkt"
          "../backend/emacs.rkt"
          
-         "../epc.rkt"
          "../constants.rkt"
 
          "base.rkt"
          "segment.rkt"
-         "serialization.rkt")
+         "serialization.rkt"
+         )
 
 
 
@@ -26,6 +29,11 @@
                                                         #:from (all-defined-out))
                                            current-node?
                                            indicator?)))
+
+(define-namespace-anchor anchor)
+;; (define ns (namespace-anchor->namespace anchor))
+;; (eval '(new object%)
+;;       ns)
 
 
 
@@ -39,6 +47,8 @@
     [tree-buffer (->m (is-a?/c buffer<%>))]
     [init-insert! (->m void?)]
     ))
+
+
 
 (define node-mixin
   (mixin (segment:node<%>) (node<%>)
@@ -167,15 +177,10 @@
     
     
     (define/public (solo-representation)
-      (send (match indicators
-              [(cons x xs)
-               (define xs-reprs (map (method representation) xs))
-               (send+ x (representation) (concat . xs-reprs))]
-              
-              ['() (make-buffer-string "")])
-            concat
-            (make-buffer-string ((string-append (make-string (indent-len) #\space) (get-name) "\n")
-                                 'font-lock-face (default+extra-face)))))
+      (bs-append (apply bs-append (map (method representation) indicators))
+                 (make-buffer-string ((string-append (make-string (indent-len) #\space) (get-name) "\n")
+                                      'font-lock-face (default+extra-face)))))
+
 
     (define (default+extra-face)
       (match extra-ftf-prop-ht
@@ -519,9 +524,7 @@
 (define-values (self-parent-path _ __) (split-path self-path))
 (define pic-directory-path (build-path self-parent-path "indicator-pics"))
 
-;(define blank-path (build-path pic-directory-path "bl"))
 
-;; (define colors '("DarkRed" "Orange" "BlueViolet"))
 
 
 
@@ -582,9 +585,16 @@
     (define/public (init-position! v) (set! position v))
     (define/public (init-show?! v)    (set! show? v))
     
+    ;; (define (display-property) (cond
+    ;;                             [show? `((margin right-margin) (eval ,(picture-symbol color)))]
+    ;;                             [else  `((margin right-margin) (eval indicator-empty-Black))]))
+
+    (define/public (image-list)
+      `(image :type png :file ,(path->string (picture-path color)) :ascent 80))
+
     (define (display-property) (cond
-                                [show? `((margin right-margin) (eval ,(picture-symbol color)))]
-                                [else  `((margin right-margin) (eval indicator-empty-Black))]))
+                                [show? `((margin right-margin) ,(image-list))]
+                                [else  `((margin right-margin) ,(send empty-indicator image-list))]))
     
     (define/public (representation)
       (make-buffer-string (" " 'display (display-property))))
@@ -663,6 +673,7 @@
     
     ))
 
+(define empty-indicator (make empty-indicator% [color "Black"]))
 
 (define-indicator modified-indicator%
   (class abstract-indicator%
@@ -725,7 +736,7 @@
 
 
 
-(define-epc-method (init-indicator-symbols)
+(define-serp-method (init-indicator-symbols!)
   (for-each (compose (method produce-el-images) make-object) indicator-list))
 
 (define (make-pics)
@@ -733,10 +744,8 @@
     (make-directory pic-directory-path))
   (for-each (compose (method produce-pictures!) make-object) indicator-list))
 
-;; (displayln (find-system-path 'run-file))
-;; (displayln self-path)
 (when (equal? (find-system-path 'run-file) self-path)
   (make-pics))
 
-;(list modified-indicator% test-indicator%)))
+;; (list modified-indicator% test-indicator%)))
 

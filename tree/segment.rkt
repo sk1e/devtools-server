@@ -14,7 +14,6 @@
 (provide (prefix-out segment: (suffixed-as interface mixin #:from (all-defined-out))))
 
 
-
 (define node<%>
   (interface (base:node<%> serialization:node<%>) 
     [shift-lower-nodes! (->m integer? void?)]

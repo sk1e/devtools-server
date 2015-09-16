@@ -11,6 +11,7 @@
          "../tree/project.rkt"
          "../tree/file.rkt"
          "../backend/buffer.rkt"
+         "../backend/buffer-string.rkt"
          
          "../tree/edsl/edsl.rkt"
          "../tree/edsl/utils.rkt"
@@ -225,22 +226,21 @@
     (let ([make-buffer-content (λ (file-12-test-bs file-12-bs)
                                   ;; file-12-test-bs without indicator prefix
                                   ;; file-12-bs with test prefix
-                                  (send (make-buffer-string ("tests\n" 'font-lock-face 'pt:intr-face))
-                                        concat
-                                        em-prefix
-                                        file-12-test-bs
-                                        (make-buffer-string ("dir-1\n" 'font-lock-face 'pt:intr-face)
-                                                            ("    new-renamed-dir\n" 'font-lock-face 'pt:intr-face)
-                                                            em-prefix ("        new-renamed-file\n" 'font-lock-face 'pt:leaf-face)
-                                                            em-prefix ("    file-11\n" 'font-lock-face 'pt:leaf-face))
-                                        empty-margin
-                                        file-12-bs
-                                        (make-buffer-string ("dir-2\n" 'font-lock-face 'pt:intr-face)
-                                                            ("    dir-21\n" 'font-lock-face 'pt:intr-face)
-                                                            em-prefix ("        file-211\n" 'font-lock-face 'pt:leaf-face)
-                                                            em-prefix ("    file-22\n" 'font-lock-face 'pt:leaf-face)
-                                                            em-prefix ("file-3\n" 'font-lock-face 'pt:leaf-face)
-                                                            em-prefix ("file-4\n" 'font-lock-face 'pt:leaf-face))))])
+                                  (bs-append (make-buffer-string ("tests\n" 'font-lock-face 'pt:intr-face))
+                                             em-prefix
+                                             file-12-test-bs
+                                             (make-buffer-string ("dir-1\n" 'font-lock-face 'pt:intr-face)
+                                                                 ("    new-renamed-dir\n" 'font-lock-face 'pt:intr-face)
+                                                                 em-prefix ("        new-renamed-file\n" 'font-lock-face 'pt:leaf-face)
+                                                                 em-prefix ("    file-11\n" 'font-lock-face 'pt:leaf-face))
+                                             empty-margin
+                                             file-12-bs
+                                             (make-buffer-string ("dir-2\n" 'font-lock-face 'pt:intr-face)
+                                                                 ("    dir-21\n" 'font-lock-face 'pt:intr-face)
+                                                                 em-prefix ("        file-211\n" 'font-lock-face 'pt:leaf-face)
+                                                                 em-prefix ("    file-22\n" 'font-lock-face 'pt:leaf-face)
+                                                                 em-prefix ("file-3\n" 'font-lock-face 'pt:leaf-face)
+                                                                 em-prefix ("file-4\n" 'font-lock-face 'pt:leaf-face))))])
 
       (send (node-ref 'file-12.rkt) select-as-new!)
 

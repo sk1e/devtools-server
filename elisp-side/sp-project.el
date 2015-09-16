@@ -2,51 +2,52 @@
 
 ;; pt - project tree
 
+(require 'dt-utils)
 
-(defconst pt:projects-path  "~/Projects")
+(defconst dt:projects-path  "~/Projects")
 
-(define-remote/interactive/callback-calling-procedures
-  (pt:new-project!
-   pt:select-by-name!
-   
-   pt:select-next-leaf!
-   pt:select-prev-leaf!
-   pt:select-next-leaf-4!
-   pt:select-prev-leaf-4!
-   
-   pt:select-next-intr!
-   pt:select-prev-intr!
-   
-   pt:lift-current-node!
-   pt:lower-current-node!
+(dt:define-remote/interactive
+ pt:new-project!
+ pt:select-by-name!
+ 
+ pt:select-next-leaf!
+ pt:select-prev-leaf!
+ pt:select-next-leaf-4!
+ pt:select-prev-leaf-4!
+ 
+ pt:select-next-intr!
+ pt:select-prev-intr!
+ 
+ pt:lift-current-node!
+ pt:lower-current-node!
 
-   pt:rename!
-   
-   pt:remove-from-tree!
-   pt:delete!
+ pt:rename!
+ 
+ pt:remove-from-tree!
+ pt:delete!
 
-   pt:create-test!
-   pt:toggle-test!
-   pt:delete-test!
-   
-   pt:run-test-at-background!
-   pt:run-module-at-foreground!
-   pt:interrupt-execution!
-   
-   pt:initialize-git-repository!
-   pt:switch-to-current-project-node!
-   ))
+ pt:create-test!
+ pt:toggle-test!
+ pt:delete-test!
+ 
+ pt:run-test-at-background!
+ pt:run-module-at-foreground!
+ pt:interrupt-execution!
+ 
+ pt:initialize-git-repository!
+ pt:switch-to-current-project-node!
+ )
 
 (defface pt:leaf-face 
-  '(( t :inherit sp:ebuffer-node-face :foreground "azure3")) "")
+  '(( t :inherit dt:ebuffer-node-face :foreground "azure3")) "")
 
 (defface pt:intr-face  
-  '(( t :inherit sp:ebuffer-node-face :foreground "#5B55FE" :weight ultra-bold)) "")
+  '(( t :inherit dt:ebuffer-node-face :foreground "#5B55FE" :weight ultra-bold)) "")
 
 
 
 (defface pt:root-unmerged-face  
-  '(( t :inherit sp:header-face :foreground "Orange")) "")
+  '(( t :inherit dt:header-face :foreground "Orange")) "")
 
 
 
@@ -54,7 +55,7 @@
 (define-minor-mode pt-mode
   "project tree mode"
   :init-value nil
-  ;:lighter " CN"
+					;:lighter " CN"
   :keymap
   (let ((pt-map (make-sparse-keymap)))
     ;; ((fn-map (make-sparse-keymap)))
@@ -90,31 +91,31 @@
   (interactive)
   (let ((default-directory pt:projects-path)
 	(insert-default-directory nil))
-    (message "==== here")
-    (sp:call-procedure/call-callback pt:new-project-from-existing-dir!
-				     (list (directory-file-name (read-directory-name "new project name: "))))))
+    (serp:call-remote-procedure pt:new-project-from-existing-dir!
+				(list (directory-file-name (read-directory-name "new project name: "))))))
 
 (defun pt:add-directory! ()
   (interactive)
-  (let ((default-directory (sp:call-sync 'pt:entered-directory-path))
+  (let ((default-directory (serp:call-remote-procedure 'pt:entered-directory-path))
 	(insert-default-directory nil))
-    (sp:call-procedure/call-callback pt:add-directory!
-				     (list (directory-file-name (read-directory-name "new directory name: "))))))
+    (serp:call-remote-procedure pt:add-directory!
+				(list (directory-file-name (read-directory-name "new directory name: "))))))
 
 (defun pt:add-file! ()
   (interactive)
-  (let ((default-directory (sp:call-sync 'pt:entered-directory-path))
+  (let ((default-directory (serp:call-remote-procedure 'pt:entered-directory-path))
 	(insert-default-directory nil))
-    (sp:call-procedure/call-callback pt:add-file!
-				     (list (read-file-name "new file name: ")))))
+    (serp:call-remote-procedure pt:add-file!
+				(list (read-file-name "new file name: ")))))
 
 
 
-(global-set-key [f1] (lambda () (interactive) (sp:call-procedure/call-callback pt:load-project! '("serpc-racket-server"))))
-(global-set-key [f2] (lambda () (interactive) (sp:call-procedure/call-callback pt:load-project! '("devtools"))))
-(global-set-key [f3] (lambda () (interactive) (sp:call-procedure/call-callback pt:load-project! '("emacs-extensions"))))
+(global-set-key [f1] (lambda () (interactive) (serp:call-remote-procedure pt:load-project! '("serp-racket"))))
+(global-set-key [f2] (lambda () (interactive) (serp:call-remote-procedure pt:load-project! '("serp"))))
+(global-set-key [f3] (lambda () (interactive) (serp:call-remote-procedure pt:load-project! '("devtools"))))
+;; (global-set-key [f3] (lambda () (interactive) (serp:call-remote-procedure pt:load-project! '("emacs-extensions"))))
 
-(add-hook 'kill-emacs-hook (remote-method pt:cache-projects!))
+(add-hook 'kill-emacs-hook pt:cache-projects!)
 
 
 
@@ -138,9 +139,9 @@
 ;; (defadvice compile-goto-error (after pt-hook
 ;; 				     (&rest args))
 ;;   (message ">>>> %s" (buffer-name (current-buffer)))
-  
+
 ;;   (when pt-mode
-;;     (sp:call-procedure/call-callback pt:select-by-name!
+;;     (serp:call-remote-procedure pt:select-by-name!
 ;; 				     (list (buffer-name (current-buffer))))))
 
 
@@ -190,19 +191,19 @@
     (case status
       (run nil)
       (exit (when pt:exec-proc
-	      (sp:call-procedure/call-callback pt:on-exit-status!
-					       (list (process-exit-status pt:exec-proc)))
+	      (serp:call-remote-procedure pt:on-exit-status!
+					  (list (process-exit-status pt:exec-proc)))
 	      (cancel-timer pt:proc-inspector-timer)
 	      
 	      ;; (with-current-buffer (process-name pt:exec-proc)
 	      ;; 	(setq buffer-read-only t))
 	      
 	      (set1 pt:exec-proc nil)))
-      (otherwise (sp:call-procedure/call-callback pt:on-unexpected-status!
-						  (list status))))))
+      (otherwise (serp:call-remote-procedure pt:on-unexpected-status!
+					     (list status))))))
 
 
-(defconst pt:racket-programm "~/racket/bin/racket")
+(defconst pt:racket-programm "~/dev/racket/racket/bin/racket")
 (defconst pt:racket-background-command (format "sleep 0.1 && %s" pt:racket-programm))
 
 
@@ -215,9 +216,9 @@
 	(when (string-match (rx (1+ digit) " success(es) "
 				(group (1+ digit)) " failure(s) "
 				(group (1+ digit)) " error(s)") out)
-	  (sp:call-procedure/call-callback pt:on-test-result!
-					   (list (+ (string-to-int (match-string-no-properties 1 out))
-						    (string-to-int (match-string-no-properties 2 out))))))
+	  (serp:call-remote-procedure pt:on-test-result!
+				      (list (+ (string-to-int (match-string-no-properties 1 out))
+					       (string-to-int (match-string-no-properties 2 out))))))
 	
 	(princ (format "%s\n" out) buffer)))))
 
@@ -250,7 +251,7 @@
 (defun pt:interrupt-process ()
   (interrupt-process pt:exec-proc))
 
-;(kill-process)
+					;(kill-process)
 
 
 
@@ -283,7 +284,7 @@
       (font-lock-mode))))
 
 
-;(ad-activate #'buffer-modified-p)
+					;(ad-activate #'buffer-modified-p)
 ;; (ad-activate #'insert)
 ;; (ad-activate #'backward-delete-char-untabify)
 ;; ;; (ad-activate #'delete-region)

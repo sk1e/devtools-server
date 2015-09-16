@@ -5,7 +5,8 @@
 
          "buffer.rkt"
          "../constants.rkt"
-         "../sg-epc.rkt"
+
+         serp
          
          (for-syntax racket/base
                      racket/syntax))
@@ -77,10 +78,10 @@
     (field [project-buffer (new emacs-buffer% [name const:project-tree-buffer-name])])
     
     (define/public (deferred-call proc . args)
-      (apply el-deferred-call proc args))
+      (apply add-deferred-call! proc args))
 
     (define/public (direct-call proc . args)
-      (apply el-direct-call proc args))
+      (apply call-emacs-procedure/null-rt proc args))
 
     (define/public (buffer%) emacs-buffer%)
 

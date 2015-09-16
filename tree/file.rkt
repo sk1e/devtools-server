@@ -6,13 +6,16 @@
          racket/match
          racket/file
 
+         racket/class
+         
          ss/racket/class
          ss/racket/provide
          
          unstable/list
          
          "base.rkt"
-         "serialization.rkt")
+         "serialization.rkt"
+         )
 
 (provide (prefix-out file: (combine-out (suffixed-as interface mixin class
                                                      #:from (all-defined-out))
@@ -20,8 +23,19 @@
                                         path->list)))
 
 
+;; (define-namespace-anchor anchor)
+;; (define ns (namespace-anchor->namespace anchor))
+;; (eval '(new object%)
+;;       ns)
+
+;; (define/contract (ff l)
+;;   (-> list? void?)
+;;   (void))
+
+
 (define (intr? v)       (is-a? v intr<%>))
 (define (leaf? v)       (is-a? v leaf<%>))
+
 
 
 (define node<%>
@@ -74,6 +88,8 @@
 (define (ancestor-implementation? %) (implementation? % ancestor<%>))
 (define (intr-implementation? %) (implementation? % intr<%>))
 (define (leaf-implementation? %) (implementation? % leaf<%>))
+
+
 (define (ancestor? node) (is-a? node ancestor<%>))
 
 (define descendant<%>

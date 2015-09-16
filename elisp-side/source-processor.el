@@ -1,16 +1,16 @@
 ;;; -*- lexical-binding: t -*-
 
-(require 'sp-buffer)
-(require 'sp-server)
-(require 'sp-project)
-(require 'sp-git)
+(require 'dt-buffer)
+(require 'dt-server)
+(require 'dt-project)
+;; (require 'dt-git)
 
 
-(defface sp:ebuffer-node-face 
+(defface dt:ebuffer-node-face 
   '((t :family "Liberation Mono")) "")
 
-(defface sp:root-face
-  '(( t :inherit sp:header-face :foreground "gray68")) "")
+(defface dt:root-face
+  '(( t :inherit dt:header-face :foreground "gray68")) "")
 
 
 
@@ -21,13 +21,19 @@
 
 
 
-(defface sp:header-face 
-  '((t :inherit sp:ebuffer-node-face
+(defface dt:header-face 
+  '((t :inherit dt:ebuffer-node-face
        :height 110
        :weight ultra-bold)) "")
 
 
-(provide 'source-processor)
+(defvar dt:server 
+  (serp:start-server "test" "export PLTSTDERR=\"error none@serp\";~/racket/bin/racket ~/Projects/devtools/server.rkt 2>serp-err.txt")
+  "devtools serp server")
+
+
+
+(provide 'devtools)
 
 
 ;; (sp:client-procedures
@@ -40,7 +46,6 @@
       (append sp:client-proc-list
 	      '(yes-or-no-p read-string)))
 
-(sp:server-start)
 
 ;;(insert (propertize "q" 'display '((margin right-margin) "asd")))
 

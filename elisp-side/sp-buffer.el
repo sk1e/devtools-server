@@ -1,5 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 
+;; todo inhibit-read-only 
+
 (defun insert-to (string buffer)
   (with-current-buffer buffer
     (let ((buffer-read-only nil))

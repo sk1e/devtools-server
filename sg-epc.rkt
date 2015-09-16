@@ -4,7 +4,7 @@
          racket/pretty
          racket/string
          
-         "epc.rkt"
+         serp
          
          (for-syntax racket/base
                      racket/function
@@ -22,14 +22,11 @@
 ;(define sg-logger (make-logger 'srcgraph-logger epc-logger))
 ;(current-logger sg-logger)
 
-(define server (new server%))
+;; (define (el-deferred-call procedure-symbol . args)
+;;   (send server append-call procedure-symbol args))
 
-
-(define (el-deferred-call procedure-symbol . args)
-  (send server append-call procedure-symbol args))
-
-(define (el-direct-call procedure-symbol . args)
-  (send server call-remote-procedure procedure-symbol args))
+;; (define (el-direct-call procedure-symbol . args)
+;;   (send server call-remote-procedure procedure-symbol args))
 
 
 
@@ -100,7 +97,7 @@
         #:methods method:id ...)
      (with-syntax ([(method-name ...) (stx-map (curryr prefix-id #'prefix) #'(method ...))])
                    
-       #'(begin (define-epc-method (method-name . args)
+       #'(begin (define-serp-method (method-name . args)
                   (send object method . args))
                 ...))]))
 

@@ -15,7 +15,8 @@
          "serialization.rkt"
          "../constants.rkt"
          "../backend/emacs.rkt"
-         "../backend/buffer.rkt")
+         "../backend/buffer.rkt"
+         "../backend/buffer-string.rkt")
 
 
 (provide (prefix-out project: (suffixed-as interface class
@@ -25,10 +26,15 @@
 
 (define-namespace-anchor anchor)
 (define ns (namespace-anchor->namespace anchor))
+;; (eval '(new object%)
+;;       ns)
 
 (namespace-set-variable-value! 'modified-indicator% ebuffer:modified-indicator% #f ns)
 (namespace-set-variable-value! 'test-indicator% ebuffer:test-indicator% #f ns)
 ;(namespace-set-variable-value! 'empty-indicator% ebuffer:empty-indicator%% #f ns)
+
+;; (eval (call-with-input-file "/home/god/Projects/serp-racket/project-cache" read)
+;;       ns)
 
 
 (define (leaf? v)       (is-a? v leaf<%>))
@@ -37,7 +43,7 @@
 (define (runnable-leaf? v) (is-a? v runnable-leaf<%>))
 
 
-(define-logger project)
+;; (define-logger project)
 ;; log-project-debug
 
 
@@ -245,9 +251,9 @@
     (define/override (pre-tree-insert!)
       (super pre-tree-insert!)
       (send (tree-buffer) set-header! (get-name-header)))
-      ;; (send (tree-buffer) set-header! (cond
-      ;;                                  [git-root (send (get-name-header) concat (send git-root header-suffix))]
-      ;;                                  [else (get-name-header)])))
+    ;; (send (tree-buffer) set-header! (cond
+    ;;                                  [git-root (send (get-name-header) concat (send git-root header-suffix))]
+    ;;                                  [else (get-name-header)])))
 
 
     (define/public (switch-to-current-project-node!)
@@ -824,4 +830,5 @@
     (define/override (child-directory%) root%)
     
     ))
+
 
