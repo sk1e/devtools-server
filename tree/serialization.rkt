@@ -15,9 +15,6 @@
                                                  #:from (all-defined-out)))
          read-node)
 
-;; (define (id-number-init-predicate obj)
-
-;;   )
 
 (define (node-with-initialized-id-number? node)
   (natural-number/c (get-field id-number node)))

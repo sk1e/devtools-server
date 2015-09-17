@@ -603,7 +603,7 @@
       (define point (buffer-point))
       (send+ node
              (tree-buffer)
-             (put-text-property/eval point (add1 point) 'display (display-property))))
+             (put-text-property point (add1 point) 'display (display-property))))
     
     (define (switch! show-value)
       (set! show? show-value)

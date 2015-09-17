@@ -13,7 +13,7 @@
          ss/racket/syntax
 
          serp
-         ;"specifier.rkt"
+         
          "buffer-string.rkt"
 
          (for-syntax racket/base
@@ -45,7 +45,6 @@
                   void?)]
     [delete-region (->m natural-number/c natural-number/c void?)]
     [put-text-property (->m natural-number/c natural-number/c symbol? any/c void?)]
-    [put-text-property/eval (->m natural-number/c natural-number/c symbol? any/c void?)]
     [set-header! (->m buffer-string? void?)]
     [goto-char! (->m natural-number/c void?)]
     [clear-buffer! (->m void?)]
@@ -84,7 +83,6 @@
               call
               substring-content
               put-text-property
-              put-text-property/eval
               goto-char!
               clear-buffer!
               set-header!
@@ -99,16 +97,12 @@
     (super-new)
     
     (field [point 1]
-           [content ;(buffer-string "" #())
-            (bs-make "" '())
-                    ]
+           [content (buffer-string "" #())]
            [header #f])
 
     (define/override (clear-buffer!)
       (set! point 1)
-      (set! content ;(buffer-string "" #())
-            (bs-make "" '())
-            ))
+      (set! content (buffer-string "" #())))
     
     (define/override (insert bs #:point [pnt point])
       (set! content (bs-append (bs-substring content 0 (sub1 pnt))
@@ -140,8 +134,6 @@
     
     
 
-    (define/override (put-text-property/eval from to prop value)
-      (put-text-property from to prop value))
 
 
     (define/override (substring-content from [to (add1 (send content bs-length))])
@@ -188,8 +180,6 @@
     (define/override (put-text-property from to face value)
       (call 'put-text-property from to face value))
 
-    (define/override (put-text-property/eval from to face value)
-      (call 'put-text-property/eval from to face value))
     
     (define/override (substring-content from to)
       (error 'not-implemented))
