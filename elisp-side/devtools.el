@@ -49,8 +49,6 @@
     (switch-to-buffer log-buffer)))
 
 
-
-
 (defvar dt:server
   (serp:start-racket-server "devtools" (format "~/Projects/%s/server.rkt" devtools-dir)))
 

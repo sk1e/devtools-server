@@ -1,11 +1,17 @@
 #lang racket/base
 
 
-(foldl (λ (x res)
-          (printf "~a ~a\n" x res)
-          (+ x res))
-       0
-       '(1 2 3 4))
+;; (foldl (λ (x res)
+;;           (printf "~a ~a\n" x res)
+;;           (+ x res))
+;;        0
+;;        '(1 2 3 4))
+
+;; (define (pp v p [d 0])
+;;   (print "asd"))
+
+;; (parameterize [(global-port-print-handler pp)]
+;;   (print "de"))
 
 
 
