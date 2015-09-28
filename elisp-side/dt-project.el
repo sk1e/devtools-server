@@ -109,6 +109,11 @@
 	     (read-file-name "new file name: "))))
 
 
+(defun pt:load-project! ()
+  (interactive)
+  (let ((default-directory pt:projects-path)
+	(insert-default-directory nil))
+    (dt:call/call-return 'pt:load-project! (read-directory-name "project name: "))))
 
 ;; (global-set-key [f1] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "serp-racket")))
 (global-set-key [f1] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "vkr-paper")))
