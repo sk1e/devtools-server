@@ -117,7 +117,7 @@
 
 ;; (global-set-key [f1] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "serp-racket")))
 (global-set-key [f1] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "vkr-paper")))
-(global-set-key [f2] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "xx")))
+(global-set-key [f2] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "prac-paper")))
 (global-set-key [f3] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "devtools")))
 ;; (global-set-key [f3] (lambda () (interactive) (dt:call pt:load-project! '("emacs-extensions"))))
 
@@ -209,7 +209,7 @@
 			  status)))))
 
 
-(defconst pt:racket-programm "~/dev/racket/racket/bin/racket")
+(defconst pt:racket-programm "~/racket/bin/racket")
 (defconst pt:racket-background-command (format "sleep 0.1 && %s" pt:racket-programm))
 
 
