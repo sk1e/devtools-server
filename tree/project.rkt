@@ -261,7 +261,7 @@
     
     (define/public (get-name-header)
       (make-buffer-string ((string-append " " (get-name))
-                           'font-lock-face 'sp:root-face)))
+                           'font-lock-face 'dt:root-face)))
     
 
 
