@@ -91,21 +91,21 @@
   (interactive)
   (let ((default-directory pt:projects-path)
 	(insert-default-directory nil))
-    (dt:call/call-return 'pt:new-project-from-existing-dir!
+    (dt:call! 'pt:new-project-from-existing-dir!
 	     (directory-file-name (read-directory-name "new project name: ")))))
 
 (defun pt:add-directory! ()
   (interactive)
   (let ((default-directory (dt:call 'pt:entered-directory-path))
 	(insert-default-directory nil))
-    (dt:call/call-return pt:add-directory!
+    (dt:call! pt:add-directory!
 	     (directory-file-name (read-directory-name "new directory name: ")))))
 
 (defun pt:add-file! ()
   (interactive)
   (let ((default-directory (dt:call 'pt:entered-directory-path))
 	(insert-default-directory nil))
-    (dt:call/call-return 'pt:add-file!
+    (dt:call! 'pt:add-file!
 	     (read-file-name "new file name: "))))
 
 
@@ -113,15 +113,15 @@
   (interactive)
   (let ((default-directory pt:projects-path)
 	(insert-default-directory nil))
-    (dt:call/call-return 'pt:load-project! (read-directory-name "project name: "))))
+    (dt:call! 'pt:load-project! (read-directory-name "project name: "))))
 
 ;; (global-set-key [f1] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "serp-racket")))
-(global-set-key [f1] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "vkr-paper")))
-(global-set-key [f2] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "prac-paper")))
-(global-set-key [f3] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "devtools")))
+(global-set-key [f1] (lambda () (interactive) (dt:call! 'pt:load-project! "vkr-paper")))
+(global-set-key [f2] (lambda () (interactive) (dt:call! 'pt:load-project! "prac-paper")))
+(global-set-key [f3] (lambda () (interactive) (dt:call! 'pt:load-project! "devtools")))
 ;; (global-set-key [f3] (lambda () (interactive) (dt:call pt:load-project! '("emacs-extensions"))))
 
-(add-hook 'kill-emacs-hook (lambda () (dt:call/call-return 'pt:cache-projects!)))
+(add-hook 'kill-emacs-hook (lambda () (dt:call! 'pt:cache-projects!)))
 
 
 
@@ -133,8 +133,8 @@
 	       (not (eq project-buffer-modified-p modifiedp)))
       (setq project-buffer-modified-p modifiedp)
       (if modifiedp
-	  (dt:call/call-return 'pt:switch-on-indicator! 0)
-	(dt:call/call-return 'pt:switch-off-indicator! 0)))))
+	  (dt:call! 'pt:switch-on-indicator! 0)
+	(dt:call! 'pt:switch-off-indicator! 0)))))
 
 
 (defadvice switch-to-buffer (before pt-hook
@@ -197,7 +197,7 @@
     (case status
       (run nil)
       (exit (when pt:exec-proc
-	      (dt:call/call-return 'pt:on-exit-status!
+	      (dt:call! 'pt:on-exit-status!
 		       (process-exit-status pt:exec-proc))
 	      (cancel-timer pt:proc-inspector-timer)
 	      
@@ -205,7 +205,7 @@
 	      ;; 	(setq buffer-read-only t))
 	      
 	      (set1 pt:exec-proc nil)))
-      (otherwise (dt:call/call-return 'pt:on-unexpected-status!
+      (otherwise (dt:call! 'pt:on-unexpected-status!
 			  status)))))
 
 
@@ -222,7 +222,7 @@
 	(when (string-match (rx (1+ digit) " success(es) "
 				(group (1+ digit)) " failure(s) "
 				(group (1+ digit)) " error(s)") out)
-	  (dt:call/call-return 'pt:on-test-result!
+	  (dt:call! 'pt:on-test-result!
 		   (+ (string-to-int (match-string-no-properties 1 out))
 		      (string-to-int (match-string-no-properties 2 out)))))
 	

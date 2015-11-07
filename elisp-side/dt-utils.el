@@ -5,7 +5,7 @@
   (loop for name in names
 	collect `(defun ,name ()
 		   (interactive)
-		   (serp:call/call-return dt:server ',name))
+		   (serp:call! dt:server ',name))
 	into defs
 	finally return (cons 'progn defs)))
 

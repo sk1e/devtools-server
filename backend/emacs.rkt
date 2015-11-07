@@ -78,10 +78,10 @@
     (field [project-buffer (new emacs-buffer% [name const:project-tree-buffer-name])])
     
     (define/public (deferred-call proc . args)
-      (apply add-deferred-call! proc args))
+      (apply serp-call! proc args))
 
     (define/public (direct-call proc . args)
-      (apply call-emacs-procedure/null-rt proc args))
+      (apply serp-call proc args))
 
     (define/public (buffer%) emacs-buffer%)
 

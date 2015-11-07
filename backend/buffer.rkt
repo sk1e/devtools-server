@@ -161,17 +161,17 @@
     (inherit-field name)
     
     (define/override (call proc . args)      
-      (add-deferred-call! 'call-in-buffer name proc args))
+      (serp-call! 'call-in-buffer name proc args))
     
     
     (define/override (insert buffer-string #:point [point #f])
       ;; todo split it
       (cond
-       [point (add-deferred-call! 'insert-to-at-point buffer-string name point)]
-       [else (add-deferred-call! 'insert-to buffer-string name)]))
+       [point (serp-call! 'insert-to-at-point buffer-string name point)]
+       [else (serp-call! 'insert-to buffer-string name)]))
 
     (define/override (set-header! buffer-string)
-      (add-deferred-call! 'set-buffer-header name buffer-string))
+      (serp-call! 'set-buffer-header name buffer-string))
 
     
     (define/override (delete-region from to)
@@ -191,9 +191,9 @@
       ;; todo try erase-buffer
       (call `(lambda () (delete-region 1 (point-max)))))
     
-    (define/override (switch-to-buffer!) (add-deferred-call! 'switch-to-buffer name))
+    (define/override (switch-to-buffer!) (serp-call! 'switch-to-buffer name))
     (define/override (revert!) (call 'revert-buffer 't 't 't))
-    (define/override (kill!) (add-deferred-call! 'kill-buffer name))
+    (define/override (kill!) (serp-call! 'kill-buffer name))
     
     ))
 

@@ -55,8 +55,8 @@
 (defun dt:call (proc &rest args)
   (apply #'serp:call dt:server proc args))
 
-(defun dt:call/call-return (proc &rest args)
-  (apply #'serp:call/call-return dt:server proc args))
+(defun dt:call! (proc &rest args)
+  (apply #'serp:call! dt:server proc args))
 
 
 (provide 'devtools)
