@@ -736,7 +736,7 @@
 
 
 
-(define-serp-method (init-indicator-symbols!)
+(define-serp (init-indicator-symbols!)
   (for-each (compose (method produce-el-images) make-object) indicator-list))
 
 (define (make-pics)
