@@ -32,7 +32,7 @@
         #:methods method:id ...)
      (with-syntax ([(method-name ...) (stx-map (curryr prefix-id #'prefix) #'(method ...))])
                    
-       #'(begin (define-serp-method (method-name . args)
+       #'(begin (define-serp (method-name . args)
                   (send object method . args))
                 ...))]))
 
