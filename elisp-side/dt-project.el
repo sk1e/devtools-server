@@ -92,21 +92,21 @@
   (let ((default-directory pt:projects-path)
 	(insert-default-directory nil))
     (dt:call! 'pt:new-project-from-existing-dir!
-	     (directory-file-name (read-directory-name "new project name: ")))))
+              (directory-file-name (read-directory-name "new project name: ")))))
 
 (defun pt:add-directory! ()
   (interactive)
   (let ((default-directory (dt:call 'pt:entered-directory-path))
 	(insert-default-directory nil))
     (dt:call! pt:add-directory!
-	     (directory-file-name (read-directory-name "new directory name: ")))))
+              (directory-file-name (read-directory-name "new directory name: ")))))
 
 (defun pt:add-file! ()
   (interactive)
   (let ((default-directory (dt:call 'pt:entered-directory-path))
 	(insert-default-directory nil))
     (dt:call! 'pt:add-file!
-	     (read-file-name "new file name: "))))
+              (read-file-name "new file name: "))))
 
 
 (defun pt:load-project! ()
@@ -121,7 +121,7 @@
 (global-set-key [f3] (lambda () (interactive) (dt:call! 'pt:load-project! "devtools")))
 ;; (global-set-key [f3] (lambda () (interactive) (dt:call pt:load-project! '("emacs-extensions"))))
 
-(add-hook 'kill-emacs-hook (lambda () (dt:call! 'pt:cache-projects!)))
+;; (add-hook 'kill-emacs-hook (lambda () (dt:call! 'pt:cache-projects!)))
 
 
 
@@ -198,7 +198,7 @@
       (run nil)
       (exit (when pt:exec-proc
 	      (dt:call! 'pt:on-exit-status!
-		       (process-exit-status pt:exec-proc))
+                        (process-exit-status pt:exec-proc))
 	      (cancel-timer pt:proc-inspector-timer)
 	      
 	      ;; (with-current-buffer (process-name pt:exec-proc)
@@ -206,7 +206,7 @@
 	      
 	      (set1 pt:exec-proc nil)))
       (otherwise (dt:call! 'pt:on-unexpected-status!
-			  status)))))
+                           status)))))
 
 
 (defconst pt:racket-programm "~/racket/bin/racket")
@@ -223,8 +223,8 @@
 				(group (1+ digit)) " failure(s) "
 				(group (1+ digit)) " error(s)") out)
 	  (dt:call! 'pt:on-test-result!
-		   (+ (string-to-int (match-string-no-properties 1 out))
-		      (string-to-int (match-string-no-properties 2 out)))))
+                    (+ (string-to-int (match-string-no-properties 1 out))
+                       (string-to-int (match-string-no-properties 2 out)))))
 	
 	(princ (format "%s\n" out) buffer)))))
 
