@@ -41,7 +41,7 @@
 
 (define projects-node (file:new-descendant-from-path project:projects-directory% const:projects-path))
 
-(add-terminate-hook (λ () (send projects-node cache-projects!)))
+(post-terminate (λ () (send projects-node cache-projects!)))
 
 (produce-epc-methods
  #:on-object projects-node
