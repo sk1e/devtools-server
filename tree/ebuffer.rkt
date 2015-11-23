@@ -10,7 +10,7 @@
          ss/racket/class
          ss/racket/provide
 
-         serp
+         ss-rpc
 
          "../backend/buffer.rkt"
          "../backend/buffer-string.rkt"
@@ -736,7 +736,7 @@
 
 
 
-(define-serp (init-indicator-symbols!)
+(define-method (init-indicator-symbols!)
   (for-each (compose (method produce-el-images) make-object) indicator-list))
 
 (define (make-pics)

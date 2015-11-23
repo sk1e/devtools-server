@@ -2,7 +2,7 @@
 
 (require ss/racket/class
 
-         serp
+         ss-rpc
          
          "constants.rkt"
          
@@ -32,7 +32,7 @@
         #:methods method:id ...)
      (with-syntax ([(method-name ...) (stx-map (curryr prefix-id #'prefix) #'(method ...))])
                    
-       #'(begin (define-serp (method-name . args)
+       #'(begin (define-method (method-name . args)
                   (send object method . args))
                 ...))]))
 

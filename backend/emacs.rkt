@@ -6,7 +6,7 @@
          "buffer.rkt"
          "../constants.rkt"
 
-         serp
+         ss-rpc
          
          (for-syntax racket/base
                      racket/syntax))
@@ -78,10 +78,10 @@
     (field [project-buffer (new emacs-buffer% [name const:project-tree-buffer-name])])
     
     (define/public (deferred-call proc . args)
-      (apply serp-call! proc args))
+      (apply remote-call! proc args))
 
     (define/public (direct-call proc . args)
-      (apply serp-call proc args))
+      (apply remote-call proc args))
 
     (define/public (buffer%) emacs-buffer%)
 
