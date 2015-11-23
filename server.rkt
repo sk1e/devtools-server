@@ -127,6 +127,6 @@
 
 
 (parameterize ([emacs genuine-emacs])
-  (serve!))
+  (serve! #:log-level 'error))
 
 

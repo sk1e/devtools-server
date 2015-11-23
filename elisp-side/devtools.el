@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t -*-
 
-(require 'serp)
+(require 'ss-rpc)
 (require 'dt-buffer)
 (require 'dt-project)
 ;; (require 'dt-git)
@@ -20,14 +20,14 @@
 
 
 
-(defvar serp:racket-exec-path
+(defvar ss:racket-exec-path
   "~/racket/bin/racket"
   "path to racket executable")
 
-(defun serp:start-racket-server (name server-path)
+(defun ss:start-racket-server (name server-path)
   ;; server shouldn't produce any output to stdout/err
-  (serp:start-server name (format "export PLTSTDERR=\"error none@serp\"; %s %s 2>serp-err.txt"
-				  serp:racket-exec-path
+  (ss:start-server name (format "export PLTSTDERR=\"error none@ss-rpc\"; %s %s 2>ss-rpc-err.txt"
+				  ss:racket-exec-path
 				  server-path)))
 
 
@@ -45,18 +45,18 @@
       (delete-region 1 (point-max))
       (setq buffer-read-only t))
     (call-process "tail" nil log-buffer nil "-n 100"
-		  "/home/god/Projects/devtools-stable/serp.log")
+		  "/home/god/Projects/devtools-stable/ss-rpc.log")
     (switch-to-buffer log-buffer)))
 
 
 (defvar dt:server
-  (serp:start-racket-server "devtools" (format "~/Projects/%s/server.rkt" devtools-dir)))
+  (ss:start-racket-server "devtools" (format "~/Projects/%s/server.rkt" devtools-dir)))
 
 (defun dt:call (proc &rest args)
-  (apply #'serp:call dt:server proc args))
+  (apply #'ss:call dt:server proc args))
 
 (defun dt:call! (proc &rest args)
-  (apply #'serp:call! dt:server proc args))
+  (apply #'ss:call! dt:server proc args))
 
 
 (provide 'devtools)
