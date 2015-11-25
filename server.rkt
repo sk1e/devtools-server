@@ -127,6 +127,7 @@
 
 
 (parameterize ([emacs genuine-emacs])
-  (serve! #:log-level 'error))
+  (serve! #:log-level 'debug
+          #:log-out (open-output-file "/home/god/devtools.log" #:mode 'text #:exists 'replace)))
 
 
