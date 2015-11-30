@@ -1,4 +1,23 @@
-#lang racket
+#lang racket/base
+
+(require racket/class
+         racket/draw)
+
+
+
+;; (provide (prefix-out ebuffer: (combine-out (suffixed-as interface mixin class
+;;                                                         #:from (all-defined-out))
+;;                                            current-node?
+;;                                            indicator?)))
+
+(define-namespace-anchor anchor)
+(define ns (namespace-anchor->namespace anchor))
+(eval '(new object%)
+      ns)
+
+(is-a?/c bitmap-dc%)
+
+
 
 ;; (thread (lambda ()
 ;;           (for ([i 10])
