@@ -161,17 +161,17 @@
     (inherit-field name)
     
     (define/override (call proc . args)      
-      (remote-call! 'call-in-buffer name proc args))
+      (call! 'call-in-buffer name proc args))
     
     
     (define/override (insert buffer-string #:point [point #f])
       ;; todo split it
       (cond
-       [point (remote-call! 'insert-to-at-point buffer-string name point)]
-       [else (remote-call! 'insert-to buffer-string name)]))
+       [point (call! 'insert-to-at-point buffer-string name point)]
+       [else (call! 'insert-to buffer-string name)]))
 
     (define/override (set-header! buffer-string)
-      (remote-call! 'set-buffer-header name buffer-string))
+      (call! 'set-buffer-header name buffer-string))
 
     
     (define/override (delete-region from to)
@@ -191,9 +191,9 @@
       ;; todo try erase-buffer
       (call `(lambda () (delete-region 1 (point-max)))))
     
-    (define/override (switch-to-buffer!) (remote-call! 'switch-to-buffer name))
+    (define/override (switch-to-buffer!) (call! 'switch-to-buffer name))
     (define/override (revert!) (call 'revert-buffer 't 't 't))
-    (define/override (kill!) (remote-call! 'kill-buffer name))
+    (define/override (kill!) (call! 'kill-buffer name))
     
     ))
 
