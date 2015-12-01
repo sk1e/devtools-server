@@ -2,7 +2,7 @@
 
 (require ss/racket/class
 
-         ss-rpc
+         ss-rpc-server
          
          "constants.rkt"
          

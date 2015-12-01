@@ -12,7 +12,7 @@
          ss/racket/class
          ss/racket/syntax
 
-         ss-rpc
+         ss-rpc-server
          
          "buffer-string.rkt"
 

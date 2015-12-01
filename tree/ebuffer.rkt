@@ -10,7 +10,7 @@
          ss/racket/class
          ss/racket/provide
 
-         ss-rpc
+         ss-rpc-server
 
          "../backend/buffer.rkt"
          "../backend/buffer-string.rkt"

@@ -6,7 +6,7 @@
          "buffer.rkt"
          "../constants.rkt"
 
-         ss-rpc
+         ss-rpc-server
          
          (for-syntax racket/base
                      racket/syntax))
