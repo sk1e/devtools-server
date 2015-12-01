@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t -*-
 
-(require 'ss-rpc)
+(require 'ss-rpc-client)
 (require 'dt-buffer)
 (require 'dt-project)
 ;; (require 'dt-git)
