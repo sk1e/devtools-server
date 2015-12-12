@@ -116,8 +116,8 @@
     (dt:call! 'pt:load-project! (read-directory-name "project name: "))))
 
 ;; (global-set-key [f1] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "serp-racket")))
-(global-set-key [f1] (lambda () (interactive) (dt:call! 'pt:load-project! "vkr-paper")))
-(global-set-key [f2] (lambda () (interactive) (dt:call! 'pt:load-project! "vkr-present")))
+(global-set-key [f1] (lambda () (interactive) (dt:call! 'pt:load-project! "ss-rpc-client")))
+(global-set-key [f2] (lambda () (interactive) (dt:call! 'pt:load-project! "ss-rpc-server")))
 (global-set-key [f3] (lambda () (interactive) (dt:call! 'pt:load-project! "devtools")))
 ;; (global-set-key [f3] (lambda () (interactive) (dt:call pt:load-project! '("emacs-extensions"))))
 
