@@ -49,7 +49,6 @@
     [goto-char! (->m natural-number/c void?)]
     [clear-buffer! (->m void?)]
     [switch-to-buffer! (->m void)]
-    [revert! (->m void?)]
     [kill! (->m void?)]
     call
     
@@ -87,7 +86,6 @@
               clear-buffer!
               set-header!
               switch-to-buffer!
-              revert!
               kill!)
     ))
 
@@ -147,7 +145,6 @@
     (define/override (set-header! v) (set! header v))
 
     (define/override (switch-to-buffer!) (void))
-    (define/override (revert!) (void))
     (define/override (kill!) (set! content 'killed))
     
     ))
@@ -192,7 +189,6 @@
       (call `(lambda () (delete-region 1 (point-max)))))
     
     (define/override (switch-to-buffer!) (call! 'switch-to-buffer name))
-    (define/override (revert!) (call 'revert-buffer 't 't 't))
     (define/override (kill!) (call! 'kill-buffer name))
     
     ))

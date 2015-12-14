@@ -362,7 +362,6 @@
     [switch-to-buffer! (->m void?)]
     [modified-indicator (->m ebuffer:indicator?)]
     [test-indicator (->m ebuffer:indicator?)]
-    [revert-buffer! (->m void?)]
     ))
 
 
@@ -409,8 +408,6 @@
     (define/public (switch-to-buffer!)
       (send (emacs) deferred-call 'switch-to-buffer (get-field name buffer)))
 
-    (define/public (revert-buffer!)
-      (send buffer revert!))
     
     (define/public (buffer-name)
       (path->string (project-path)))
