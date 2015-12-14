@@ -98,7 +98,7 @@
   (interactive)
   (let ((default-directory (dt:call 'pt:entered-directory-path))
 	(insert-default-directory nil))
-    (dt:call! pt:add-directory!
+    (dt:call! 'pt:add-directory!
               (directory-file-name (read-directory-name "new directory name: ")))))
 
 (defun pt:add-file! ()
