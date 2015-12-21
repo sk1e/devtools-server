@@ -21,7 +21,7 @@
 
 
 (defvar ss:racket-exec-path
-  "~/racket/bin/racket"
+  "~/local/racket/bin/racket"
   "path to racket executable")
 
 (defun ss:start-racket-server (name server-path)
@@ -47,7 +47,7 @@
       (delete-region 1 (point-max))
       (setq buffer-read-only t))
     (call-process "tail" nil log-buffer nil "-n 100"
-		  "/home/god/Projects/devtools-stable/ss-rpc.log")
+		  "/home/kotik/Projects/devtools-stable/ss-rpc.log")
     (switch-to-buffer log-buffer)))
 
 
