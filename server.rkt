@@ -128,6 +128,6 @@
 
 (parameterize ([emacs genuine-emacs])
   (serve! #:log-level 'debug
-          #:log-out (open-output-file "/home/god/devtools.log" #:mode 'text #:exists 'replace)))
+          #:log-out (open-output-file "/home/kotik/devtools.log" #:mode 'text #:exists 'replace)))
 
 

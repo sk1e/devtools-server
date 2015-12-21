@@ -5,9 +5,9 @@
 (provide (prefix-out const: (all-defined-out)))
 
 
-(define racket-path "/home/god/racket")
+(define racket-path "/home/kotik/racket")
 
-(define projects-path "/home/god/Projects")
+(define projects-path "/home/kotik/Projects")
 (define project-cache-file-name "project-cache")
 
 
