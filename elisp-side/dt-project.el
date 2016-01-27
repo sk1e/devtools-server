@@ -209,7 +209,7 @@
                            status)))))
 
 
-(defconst pt:racket-programm "~/racket/bin/racket")
+(defconst pt:racket-programm "~/local/racket/bin/racket")
 (defconst pt:racket-background-command (format "sleep 0.1 && %s" pt:racket-programm))
 
 
