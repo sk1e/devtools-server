@@ -10,9 +10,7 @@
          
          ss/racket/class
          ss/racket/provide
-         
-         unstable/list
-         
+                  
          "base.rkt"
          "serialization.rkt"
          )

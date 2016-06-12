@@ -21,7 +21,8 @@
 
 
 (defvar ss:racket-exec-path
-  "~/local/racket/bin/racket"
+  ;; "~/local/racket/bin/racket"
+  "racket"
   "path to racket executable")
 
 (defun ss:start-racket-server (name server-path)

@@ -1,22 +1,16 @@
 #lang racket/base
 
 (require racket/class
+
          racket/draw)
 
-
-
-;; (provide (prefix-out ebuffer: (combine-out (suffixed-as interface mixin class
-;;                                                         #:from (all-defined-out))
-;;                                            current-node?
-;;                                            indicator?)))
+(define qwe% (class  object%))
+(define int (interface ()))
 
 (define-namespace-anchor anchor)
 (define ns (namespace-anchor->namespace anchor))
-(eval '(new object%)
-      ns)
-
-(is-a?/c bitmap-dc%)
-
+(eval '(list) ns)
+(is-a?/c int)
 
 
 ;; (thread (lambda ()
