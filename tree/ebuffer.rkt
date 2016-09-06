@@ -183,12 +183,14 @@
 
 
     (define (default+extra-face)
+      (log-ebuffer-debug "default+extra ht ~a" extra-ftf-prop-ht)
       (match extra-ftf-prop-ht
-        [(hash-table) (default-face)]
-        [(hash-table (key value) ...) `(:inherit ,(default-face)
-                                                 ,@(apply append (map list key value)))]))
+        [(hash-table (key value) ..1) `(:inherit ,(default-face)
+                                                 ,@(apply append (map list key value)))]
+        [_ (default-face)]))
 
     (define (refontify-with-extra!)
+      (log-ebuffer-debug "refontify-with-extra default+extra ~a" (default+extra-face))
       (fontify! (default+extra-face)))
       
             
@@ -209,6 +211,7 @@
       (send (tree-buffer) insert (solo-representation)))
     
     (define/public (fontify! face)
+      (log-ebuffer-debug "fontify ~a" face)
       (send (tree-buffer)
             put-text-property
             (+ (resultant-point) (length (indicator-list)))
@@ -218,6 +221,7 @@
 
     (define/public (put-extra-ftf-prop! key value)
       (set! extra-ftf-prop-ht (hash-set extra-ftf-prop-ht key value))
+      (log-ebuffer-debug "put-extra post ht ~a" extra-ftf-prop-ht)
       (refontify-with-extra!))
 
     (define/public (remove-extra-ftf-prop! key)
@@ -226,6 +230,7 @@
 
 
     (define/public (mark-as-selected!)
+      (log-ebuffer-debug "mark as selected")
       (put-extra-ftf-prop! ':background const:selection-background-color))
 
 
