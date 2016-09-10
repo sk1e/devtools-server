@@ -115,20 +115,6 @@
 	(insert-default-directory nil))
     (dt:call! 'pt:load-project! (read-directory-name "project name: "))))
 
-;; (global-set-key [f1] (lambda () (interactive) (dt:call/call-return 'pt:load-project! "serp-racket")))
-
-(global-set-key [f1] (lambda () (interactive) (dt:call! 'pt:load-project! "sibedge-task")))
-(global-set-key [f2] (lambda () (interactive) (dt:call! 'pt:load-project! "devtools")))
-(global-set-key [f3] (lambda () (interactive) (dt:call! 'pt:load-project! "test")))
-
-;; (global-set-key [f3] (lambda () (interactive) (dt:call! 'pt:load-project! "devtools")))
-
-;; (global-set-key [f3] (lambda () (interactive) (dt:call pt:load-project! '("emacs-extensions"))))
-
-;; (add-hook 'kill-emacs-hook (lambda () (dt:call! 'pt:cache-projects!)))
-
-
-
 
 (defvar pt:mod-status-updater (run-at-time nil 0.1 #'pt:update-modification-status))
 (defun pt:update-modification-status ()
@@ -275,8 +261,6 @@
 	  (delete-window win))
 	 
 	 (t (display-buffer buffer)))))))
-
-(global-set-key (kbd "s-2") #'show-test-exec-buffer)
 
 
 (defun pt:init-exec-buffer (name)
