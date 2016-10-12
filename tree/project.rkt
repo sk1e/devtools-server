@@ -123,8 +123,7 @@
 
     (define/public (add-file! new-name)
       (define new-file (send (entered-directory) new-file new-name))
-      (send (entered-directory) add-project-node/select! new-file)
-      (send new-file make-file-if-not!))
+      (send (entered-directory) add-project-node/select! new-file))
     
     
     (define/public (delete!)

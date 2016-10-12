@@ -25,6 +25,8 @@
   "racket"
   "path to racket executable")
 
+(setq max-lisp-eval-depth 10000)
+
 (defun ss:start-racket-server (name server-path)
   ;; server shouldn't produce any output to stdout/err
   (ss:start-server name (format "%s %s" ss:racket-exec-path server-path)))

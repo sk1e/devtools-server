@@ -145,18 +145,19 @@
 ;; (ad-activate #'compile-goto-error) 
 
 
+(setq max-lisp-eval-depth 10000)
 
 (defun pt:make-buffer (path)
   (let ((buffer (find-file-noselect path)))
     (with-current-buffer buffer
       (pt-mode)
       (layout-mode))
-    buffer))
+    buffer)) 
 
 (defun pt:init-file-buffer (path new-name new-mode-line-buffer-identification-parts)
   (pt:rename-file-buffer (pt:make-buffer path)
-			 new-name
-			 new-mode-line-buffer-identification-parts))
+        		 new-name
+        		 new-mode-line-buffer-identification-parts))
 
 
 ;; (defun pt:init-test-buffer (path)
