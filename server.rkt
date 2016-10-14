@@ -7,7 +7,7 @@
          "constants.rkt"
          
          "tree/file.rkt"
-         "tree/project.rkt"
+         "tree/project/projects-directory.rkt"
          "tree/ebuffer.rkt"
 
          "backend/emacs.rkt"
@@ -39,7 +39,7 @@
 
 
 
-(define projects-node (file:new-descendant-from-path project:projects-directory% const:projects-path))
+(define projects-node (file:new-descendant-from-path projects-directory% const:projects-path))
 
 (on-terminate (λ () (send projects-node cache-projects!)))
 

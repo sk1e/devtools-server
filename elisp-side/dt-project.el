@@ -145,7 +145,7 @@
 ;; (ad-activate #'compile-goto-error) 
 
 
-(setq max-lisp-eval-depth 10000)
+
 
 (defun pt:make-buffer (path)
   (let ((buffer (find-file-noselect path)))
