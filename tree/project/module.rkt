@@ -1,19 +1,11 @@
 #lang racket/base
 
-(require racket/unit
-         racket/contract
+(require racket/contract
          racket/match
          racket/string
 
          ss/racket/class
          
-         "descendant-sig.rkt"
-         "ancestor-sig.rkt"
-         
-         "descendant-unit.rkt"
-         "ancestor-unit.rkt"         
-         
-
          "leaf.rkt"
          "runnable.rkt"
          "test.rkt"
@@ -122,7 +114,7 @@
     (super-new)
 
     (define/override (child-file% name)
-      (match (regexp-match #px"\\.[\\w]+$" "qwe.ds")
+      (match (regexp-match #px"\\.[\\w]+$" name)
         [(list extension) (or (get-module% extension) file%)]
         [_ file%]))))
 

@@ -133,7 +133,8 @@
         
         (send* current-project
           (insert-tree!)
-          (init-file-buffers!))
+          (init-file-buffers!)
+          (init-word-autocomplete!))
         (send (get-field current-node current-project) select!)]))
     
     

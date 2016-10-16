@@ -3,6 +3,8 @@
 (require 'ss-rpc-client)
 (require 'dt-buffer)
 (require 'dt-project)
+(require 'dt-company-word-backend)
+
 ;; (require 'dt-git)
 
 
@@ -24,6 +26,9 @@
   ;; "~/local/racket/bin/racket"
   "racket"
   "path to racket executable")
+
+
+;; '(add-to-list 'company-backends 'dt:company-word-backend)
 
 (setq max-lisp-eval-depth 10000)
 

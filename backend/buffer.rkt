@@ -50,7 +50,8 @@
     [clear-buffer! (->m void?)]
     [switch-to-buffer! (->m void)]
     [kill! (->m void?)]
-    call
+    [get-content (->m string?)]
+    call-in-buffer
     
     ))
 
@@ -79,14 +80,15 @@
 
     (abstract insert
               delete-region
-              call
+              call-in-buffer
               substring-content
               put-text-property
               goto-char!
               clear-buffer!
               set-header!
               switch-to-buffer!
-              kill!)
+              kill!
+              get-content)
     ))
 
 
@@ -112,7 +114,7 @@
 
     
 
-    (define/override (call proc . args)
+    (define/override (call-in-buffer proc . args)
       (printf "\nWARNING, registered attempt to call unimplemented buffer procedure `~a'\n" proc))
     
     (define/override (delete-region from to)
@@ -146,6 +148,7 @@
 
     (define/override (switch-to-buffer!) (void))
     (define/override (kill!) (set! content 'killed))
+    (define/override (get-content) content)
     
     ))
 
@@ -157,7 +160,7 @@
 
     (inherit-field name)
     
-    (define/override (call proc . args)      
+    (define/override (call-in-buffer proc . args)      
       (call! 'call-in-buffer name proc args))
     
     
@@ -172,24 +175,25 @@
 
     
     (define/override (delete-region from to)
-      (call 'delete-region from to))
+      (call-in-buffer 'delete-region from to))
 
     (define/override (put-text-property from to face value)
-      (call 'put-text-property from to face value))
+      (call-in-buffer 'put-text-property from to face value))
 
     
     (define/override (substring-content from to)
       (error 'not-implemented))
 
     (define/override (goto-char! pos)
-      (call `(lambda () (set-window-point (get-buffer-window ,name) ,pos))))
+      (call-in-buffer `(lambda () (set-window-point (get-buffer-window ,name) ,pos))))
 
     (define/override (clear-buffer!)
       ;; todo try erase-buffer
-      (call `(lambda () (delete-region 1 (point-max)))))
+      (call-in-buffer `(lambda () (delete-region 1 (point-max)))))
     
     (define/override (switch-to-buffer!) (call! 'switch-to-buffer name))
     (define/override (kill!) (call! 'kill-buffer name))
+    (define/override (get-content) (call 'buffer-string-no-properties name))
     
     ))
 

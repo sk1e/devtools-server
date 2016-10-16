@@ -87,6 +87,16 @@
 
 
 
+(define complete-word-test
+  (test-suite
+   "complete-word test"
+   (test-equal? "h" (complete-word "h" ht) '("hey" "hello"))
+   (test-equal? "he" (complete-word "he" ht) '("hey" "hello"))
+   (test-equal? "hey" (complete-word "hey" ht) '())
+   (test-equal? "hel" (complete-word "hel" ht) '("hello"))
+   (test-equal? "d" (complete-word "d" ht) '("dog"))
+   ))
+
 (define completion-table-remove-test
   (test-suite
    "completion-table-remove test"
@@ -113,6 +123,7 @@
  (test-suite
   "tt"
   completion-table-append-test
+  complete-word-test
   completion-table-remove-test)
  )
 

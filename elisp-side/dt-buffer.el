@@ -37,6 +37,12 @@
     (let ((buffer-read-only nil))
       (apply proc args))))
 
+
+(defun buffer-string-no-properties (buffer)
+  (with-current-buffer buffer
+    (buffer-substring-no-properties 1 (point-max))))
+
+
 ;; TOFIX dirty things
 
 (provide 'dt-buffer)

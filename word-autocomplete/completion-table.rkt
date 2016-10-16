@@ -3,8 +3,10 @@
 (require racket/match
          racket/list)
 
-(provide completion-table-append
+(provide make-completion-table
+         completion-table-append
          completion-table-remove-one
+         complete-word
          (struct-out completion-data)
          (struct-out exn:fail:word-autocomplete)
          (struct-out exn:fail:word-autocomplete:no-suffix)
@@ -32,6 +34,9 @@
 
 
 
+(: make-completion-table ((Listof String) -> Completion-table))
+(define (make-completion-table strings)
+  (completion-table-append #hasheqv() strings))
 
 (: completion-table-append (Completion-table (Listof String) -> Completion-table))
 (define (completion-table-append ht strings)
@@ -53,6 +58,39 @@
                                           [ht (loop xs (completion-data-ht data))])]))]
 
                 ['() char-table]))))
+
+
+
+
+
+(: complete-word (String Completion-table  -> (Listof String)))
+(define (complete-word prefix ct)
+
+  (: collect-words (Completion-table (Listof Char) (Listof String) -> (Listof String)))
+  (define (collect-words ct chars words)
+    (match (hash-keys ct)
+      [(cons x xs) (foldl (lambda ([x : Char] [res : (Listof String)]) (collect-words-for-key ct x chars res))
+                          (collect-words-for-key ct x chars words)
+                          xs)]
+      ['() words]))
+
+
+  (: collect-words-for-key (Completion-table Char (Listof Char) (Listof String) -> (Listof String)))
+  (define (collect-words-for-key ct char chars words)
+    (match-define (completion-data ht entries-number) (hash-ref ct char))
+       (match entries-number
+         [0 (collect-words ht (cons char chars) words)]
+         [_ (collect-words ht (cons char chars) (cons (string-append prefix (list->string (reverse (cons char chars))))
+                                                      words))]))
+  
+  (let loop : (Listof String) ([ct : Completion-table ct]
+                               [chars : (Listof Char) (string->list prefix)])
+       (match chars
+         [(cons x xs) (cond
+                       [(hash-has-key? ct x) (loop (completion-data-ht (hash-ref ct x)) xs)]
+                       [else '()])]
+         ['() (collect-words ct '() '())])))
+
 
 
 
@@ -120,174 +158,4 @@
                                                        [ht (loop (completion-data-ht (hash-ref ct x)) xs)])))])))
 
 
-;; (struct Base-Node ([height : Integer]))
-
-;; (struct (A) Node Base-Node ([value   : A]
-;;                             [left    : (AVL-Node A)]
-;;                             [right   : (AVL-Node A)]))
-
-
-;; (struct Empty-node Base-Node ())
-
-;; (define-type (AVL-Node A) (U (Node A) Empty-node))
-
-
-;; (define-type (Insert A) (-> (AVL-Node A) A (Node A)))
-
-;; (: make-root (All (A) A
-;;                   (A A -> Boolean)
-;;                   (A A -> Boolean)
-;;                   -> (Values (Node A) (Insert A))))
-;; (define (make-root root-value value<? value=?)
-  
-;;   (: insert (Insert A))
-;;   (define (insert node v)
-;;     (cond
-;;      [(Empty-node? node) (Node 1 v (Empty-node 0) (Empty-node 0))]
-;;      [else
-;;       (cond 
-;;        [(value=? v (Node-value node)) node]
-       
-;;        [(value<? v (Node-value node))
-;;         (define new-left (insert (Node-left node) v))
-;;         (define node+inserted (struct-copy Node node
-;;                                            [left new-left]
-;;                                            [height #:parent Base-Node (add1 (Base-Node-height new-left))]))
-        
-;;         (match (balance-factor node+inserted)
-;;           [2 (define left (Node-left node+inserted))
-;;              (cond
-;;               [(Node? left)
-;;                (rotate-right
-;;                 (match (balance-factor left)
-;;                   [-1 (update-height
-;;                        (struct-copy Node
-;;                                     node+inserted
-;;                                     [left (rotate-left left)]))]
-;;                   [_ node+inserted]))]
-;;               [else (error 'er)])]
-          
-;;           [_ node+inserted])]
-       
-;;        [else
-;;         (define new-right (insert (Node-right node) v))
-;;         (define node+inserted (struct-copy Node node
-;;                                            [right new-right]
-;;                                            [height #:parent Base-Node (add1 (Base-Node-height new-right))]))
-        
-;;         (match (balance-factor node+inserted)
-;;           [-2 (define right (Node-right node+inserted))
-;;              (cond
-;;               [(Node? right)
-;;                (rotate-left
-;;                 (match (balance-factor right)
-;;                   [1 (update-height
-;;                        (struct-copy Node
-;;                                     node+inserted
-;;                                     [right (rotate-right right)]))]
-;;                   [_ node+inserted]))]
-;;               [else (error 'er)])]
-          
-;;           [_ node+inserted])])]))
-
-  
-
-;;   (: balance-factor : (Node A) -> Integer)
-;;   (define (balance-factor node)
-;;     (- (Base-Node-height (Node-left node))
-;;        (Base-Node-height (Node-right node))))
-  
-
-  
-;;   (: update-height : (Node A) -> (Node A))
-;;   (define (update-height node)
-;;     (struct-copy Node
-;;                  node
-;;                  [height #:parent Base-Node (add1 (max (Base-Node-height (Node-left node))
-;;                                                        (Base-Node-height (Node-right node))))]))
-  
-
-  
-;;   (: rotate-right : (Node A) -> (Node A))
-;;   (define (rotate-right node)
-;;     (define left (Node-left node))
-;;     (cond
-;;      [(Node? left)
-;;       (define new-right (update-height
-;;                          (struct-copy Node
-;;                                       node
-;;                                       [left (Node-right left)])))
-;;       (update-height
-;;        (struct-copy Node
-;;                     (Node-left node)
-;;                     [right new-right]))]
-;;      [else (error 'unexpected-empty-node)]))
-  
-
-  
-;;   (: rotate-left : (Node A) -> (Node A))
-;;   (define (rotate-left node)
-;;     (define right (Node-right node))
-;;     (cond
-;;      [(Node? right)
-;;       (define new-left (update-height
-;;                         (struct-copy Node
-;;                                      node
-;;                                      [right (Node-left right)])))
-;;       (update-height
-;;        (struct-copy Node
-;;                     (Node-right node)
-;;                     [left new-left]))]
-;;      [else (error 'unexpected-empty-node)]))
-  
-;;   (values (Node 1 root-value (Empty-node 0) (Empty-node 0))
-;;           insert))
-
-
-
-
-;; (: repr-tree (All (A) (AVL-Node A) -> String))
-;; (define (repr-tree node)
-;;   (let repr ([node node]
-;;              [depth 1])
-;;     (define indent (make-string (* 2 depth) #\ ))
-;;     (cond
-;;      [(Node? node) (format "value: ~a height: ~a\n~aleft:  ~a\n~aright: ~a"
-;;                            (~a (Node-value node) #:min-width 5)
-;;                            (Base-Node-height node)
-;;                            indent
-;;                            (repr (Node-left node) (add1 depth))
-;;                            indent
-;;                            (repr (Node-right node) (add1 depth)))]
-;;      [else (~a (Base-Node-height node))])))
-
-
-;; ;; (define display-tree (compose displayln repr-tree))
-
-;; (define-values (root insert) ((inst make-root Integer) 0 < =))
-
-;; ;; (displayln ((inst repr-tree Integer) (foldl (λ ([a : Integer]
-;; ;;                                                 [res : (Node Integer)])
-;; ;;                                             (insert res a))
-;; ;;                                          root
-;; ;;                                          (range 100))))
-
-;; ;; (for ([n (range 0 100)])
-;; ;;   (displayln n))
-
-;; ;; (define t0 (current-inexact-milliseconds))
-;; ;; (foldl (λ ([a : Integer]
-;; ;;            [res : (Node Integer)])
-;; ;;           (insert res a))
-;; ;;        root
-;; ;;        (range 1 1000000))
-
-;; ;; (displayln (/ (- (current-inexact-milliseconds) t0) 1000))
-
-
-;; ;; (foldl (λ ([a : Exact-Nonnegative-Integer]
-;; ;;            [res : (Node Exact-Nonnegative-Integer)])
-;; ;;           (insert res a))
-;; ;;        root
-;; ;;        (range 1 50000))
 

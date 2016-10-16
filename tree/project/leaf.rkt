@@ -9,8 +9,9 @@
          "descendant-sig.rkt"
          
          "descendant-unit.rkt"
-         "ancestor-unit.rkt"         
-         
+         "ancestor-unit.rkt"
+                  
+         "word-autocompletable.rkt"
          "../file.rkt"
          "../ebuffer.rkt"
          "../../constants.rkt"
@@ -116,7 +117,7 @@
 
 
 (define-composed-mixins
-  [leaf-final-sum (ebuffer:leaf-final-sum file:leaf-sum descendant-sum leaf)])
+  [leaf-final-sum (ebuffer:leaf-final-sum file:leaf-sum descendant-sum leaf word-autocompletable)])
 
 
 (define-inspected-class file% (class-from-mixins leaf-final-sum))

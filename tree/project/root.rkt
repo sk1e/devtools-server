@@ -3,6 +3,7 @@
 (require racket/unit
          racket/contract
          racket/match
+         
 
          ss/racket/class
 
@@ -22,6 +23,7 @@
          "../../backend/emacs.rkt"
          "../../backend/buffer.rkt"
          "../../backend/buffer-string.rkt"
+         (prefix-in completion: "../../word-autocomplete/completion-table.rkt")
          )
 
 
@@ -50,8 +52,9 @@
     [run-other-if-left! (->m void?)]
 
     ;; [initialize-git-repository! (->m void?)]
-     [get-name-header (->m buffer-string?)]
+    [get-name-header (->m buffer-string?)]
     [switch-to-current-project-node! (->m void?)]
+    [complete-word (->m string? (listof string?))]
     ;; [reload-project! (->m void?)]
     ))
 
@@ -119,10 +122,7 @@
     ;;   (set! git-root (new (git-root%)))
     ;;   (send git-root initialize-repository! this))
     
-    
-    
-
-    
+        
     (define/public (init-file-buffers!)
       (define leaf-nodes (leafs))
       (for-each (method initialize-project-node!) leaf-nodes)
@@ -171,7 +171,33 @@
         ['() (void)]
         [(cons (cons module executor) _) (send module run-start! executor)]))
 
+
+
+    (define completion-table 'uninitialized)
     
+    (define/public (init-word-autocomplete!)
+      (define ht (make-hash))
+      (for ([leaf (leafs)])
+        (match (regexp-match #px"\\.[\\w]+$" (send leaf get-name))
+          [(list x)
+           (send leaf parse-words!)
+           (hash-update! ht x
+                         (lambda (v) (cons leaf v)) (lambda () '()))]))
+
+
+      (define ht-list (hash->list ht))
+      (set! completion-table
+            (for/hash ([extension (map car ht-list)]
+                       [leafs (map cdr ht-list)])
+              (values extension (map (compose completion:make-completion-table (field-getter words))
+                                     leafs))))
+      
+      )
+
+    (define/public (complete-word prefix)
+      (match (regexp-match #px"\\.[\\w]+$" (send current-node get-name))
+        [(list x) (completion:complete-word prefix (hash-ref x completion-table))]
+        [_ '()]))
     
     ))
 

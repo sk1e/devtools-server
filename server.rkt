@@ -59,7 +59,8 @@
  lift-current-node! lower-current-node!
  ;select-by-name!
  initialize-git-repository!
- switch-to-current-project-node!)
+ switch-to-current-project-node!
+ complete-word)
 
 (produce-epc-methods
  #:on-object (get-field+ projects-node current-project git-root)

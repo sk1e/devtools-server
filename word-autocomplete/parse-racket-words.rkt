@@ -1,11 +1,13 @@
 #lang racket/base
 
 
-(require parser-tools/yacc
+(require racket/contract
+         parser-tools/yacc
          parser-tools/lex
          (prefix-in : parser-tools/lex-sre))
 
-(provide parse-racket-words)
+(provide (contract-out
+          [parse-racket-words (-> input-port? (listof string?))]))
 
 
 
