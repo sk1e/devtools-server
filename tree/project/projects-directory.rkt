@@ -1,14 +1,13 @@
  #lang racket/base
 
 (require racket/contract
+         racket/string
          
          ss/racket/class
 
-         "leaf.rkt"
-         "test.rkt"
-         "module.rkt"
+
          "root.rkt"
-         "intr.rkt"
+
          "../file.rkt"
          "../ebuffer.rkt"
          "../serialization.rkt"
@@ -25,6 +24,16 @@
 
 (namespace-set-variable-value! 'modified-indicator% ebuffer:modified-indicator% #f ns)
 (namespace-set-variable-value! 'test-indicator% ebuffer:test-indicator% #f ns)
+
+
+
+(define (fill-filter-regexp config)
+  (define ignored-files (hash-ref config 'ignored-files))
+  (define names (hash-ref ignored-files 'names))
+  (define regexps (hash-ref ignored-files 'regexps))
+  (regexp (string-join (append (map (lambda (x) (string-append "^" x "$")) names)
+                               regexps)
+                       "|")))
 
 
 (define projects-directory<%>
@@ -59,12 +68,36 @@
     (define/override (push-child! node)
       (super push-child! node)
       (set! project-ht (hash-set project-ht (path->string (get-field name node)) node)))
+
+    (define (project-data-directory-path name)
+      (build-path (absolute-path) name const:project-data-directory-name))
     
     (define (project-cache-path name)
-      (build-path (absolute-path) name const:project-cache-file-name))
+      (build-path (project-data-directory-path name) const:project-cache-file-name))
+
+    (define (project-config-path name)
+      (build-path (project-data-directory-path name) const:project-config-file-name))
+
+    (define (project-data-directory-exists? name)
+      (directory-exists? (project-data-directory-path name)))
+
+    (define (config-exists? name)
+      (file-exists? (project-config-path name)))
     
     (define (cache-exists? name)
       (file-exists? (project-cache-path name)))
+    
+    (define (make-project-data-if-not! name)
+      (unless (project-data-directory-exists? name)
+        (make-directory (project-data-directory-path name))))
+    
+    (define (make-config-if-not! name)
+      (unless (config-exists? name)
+        (call-with-output-file (project-config-path name) (lambda (out) (write const:project-default-config out)))))
+    
+    (define (init-project-data! name)
+      (make-project-data-if-not! name)
+      (make-config-if-not! name))
 
     (define/public (init-new-project! name)
       (set! current-project (new-directory name))
@@ -94,30 +127,36 @@
         ;;   (make-directory!)
         ;;   (init-tree-buffer!))
         ]))
+
+
+    (define/public (reload-current-project!)
+      (new-project-from-existing-dir! (send current-project get-name)))
     
     (define/public (new-project-from-existing-dir! name)
-      (when (or (not (cache-exists? name))
-                (equal? 't (send (emacs) direct-call 'yes-or-no-p "there is a cache for this project, make new project anyway? ")))
+      ;; (when (or (not (cache-exists? name))
+      ;;           (equal? 't (send (emacs) direct-call 'yes-or-no-p "there is a cache for this project, make new project anyway? ")))
 
-        (init-new-project! name)
-        
-        (send* current-project
-           (fill-recursively #:filter-not-rx #rx"^backup$|^[.]|^compiled$|^tests$")
-          (init-tree-buffer!)
-          (init-file-buffers!))
+      (init-new-project! name)
+      (init-project-data! name)
 
+      (define config (call-with-input-file (project-config-path name) read))
+      
+      (send* current-project
+        (fill-recursively #:filter-not-rx (fill-filter-regexp config))
+        (init-tree-buffer!)
+        (init-file-buffers!))
+      
+      (define project-children (get-field children current-project))
 
-        (define project-children (get-field children current-project))
-
-        (when (pair? project-children)
-          (cond
-           [(send current-project first-leaf) => (method select!)]
-           [else (send (car project-children) select!)]))))
-    
-    
+      (when (pair? project-children)
+        (cond
+         [(send current-project first-leaf) => (method select!)]
+         [else (send (car project-children) select!)])))
+  
+  
 
     (define/public (read-project name)
-      (read-node (build-path (absolute-path) name const:project-cache-file-name) ns))
+      (read-node (project-cache-path name) ns))
     
     (define/public (load-project! name)
       (cond
@@ -134,7 +173,8 @@
         (send* current-project
           (insert-tree!)
           (init-file-buffers!)
-          (init-word-autocomplete!))
+          ;; (init-word-autocomplete!)
+          )
         (send (get-field current-node current-project) select!)]))
     
     

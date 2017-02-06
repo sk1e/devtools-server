@@ -7,6 +7,7 @@
          ss/racket/class
          
          "leaf.rkt"
+         ;; "intr.rkt"
          "runnable.rkt"
          "test.rkt"
          "../file.rkt"
@@ -44,7 +45,8 @@
     
     (super-new)
 
-    (inherit-field indicators)
+    (inherit-field indicators
+                   parent)
     
     (inherit project-path
              root
@@ -52,7 +54,8 @@
              node-identifier
              switch-to-buffer!
              test-indicator
-             run!)
+             run!
+             get-name)
     
     (define/override (field-setter-exprs)
       (cond
@@ -64,7 +67,8 @@
         
     (define/public (init-test-module v)
       (set! test-module v)
-      (set-field! tested-module test-module this))
+      (set-field! tested-module test-module this)
+      (send test-module initialize-project-node!))
     
     (define/public (test-name)
       (string-append (string-join (match (map path->string (cddr (file:path->list (project-path))))
@@ -82,15 +86,30 @@
        [else ""]))
     
     (define/public (create-test!)
-      (send (root) init-test-directory-if-not!)
-      
-      (define test-dir (get-field test-directory (root)))
-      (init-test-module (make module-test% [name (test-name)]))
-      
-      (send test-dir add-project-node! test-module)
-      (send (test-indicator) switch-on!)
+      (void)
+      ;; (define test-dir (make directory% [name "tests"]))      
+      ;; (send parent push-child! test-dir)
+      ;; (send test-dir make-directory-if-not!)
+      ;; (set! test-module (make test% [name (get-name)]))
+      ;; (set-field! tested-module test-module this)
+      ;; (send test-dir push-child! test-module)
+      ;; (send test-module initialize-project-node!)
+      ;; (send (test-indicator) switch-on!)
+      ;; (send (get-field buffer test-module) switch-to-buffer!)
 
-      (send test-module make-file-if-not!))
+
+
+      
+      ;; (send (root) init-test-directory-if-not!)
+      
+      ;; (define test-dir (get-field test-directory (root)))
+      ;; (init-test-module (make module-test% [name (test-name)]))
+      
+      ;; (send test-dir add-project-node! test-module)
+      ;; (send (test-indicator) switch-on!)
+
+      ;; (send test-module make-file-if-not!)
+      )
 
     
 

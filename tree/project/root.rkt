@@ -11,7 +11,6 @@
          "ancestor-unit.rkt"
          
          "ancestor-sig.rkt"
-         "final-sig.rkt"
 
          "module.rkt"
          "runnable.rkt"

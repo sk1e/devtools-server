@@ -8,6 +8,7 @@
 
 (dt:define-remote/interactive
  pt:new-project!
+ pt:reload-current-project!
  pt:select-by-name!
  
  pt:select-next-leaf!
@@ -148,7 +149,7 @@
 
 
 (defun pt:make-buffer (path)
-  (let ((buffer (find-file-noselect path)))
+  (let ((buffer (find-file-noselect path t)))
     (with-current-buffer buffer
       (pt-mode)
       (layout-mode))
@@ -200,7 +201,7 @@
                            status)))))
 
 
-(defconst pt:racket-programm "~/local/racket/bin/racket")
+(defconst pt:racket-programm "racket")
 (defconst pt:racket-background-command (format "sleep 0.1 && %s" pt:racket-programm))
 
 

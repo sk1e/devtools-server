@@ -11,7 +11,7 @@
 
 (provide test<%>
          test-mixin
-         module-test%)
+         test%)
 
 
 (define test<%>
@@ -66,5 +66,5 @@
     
     ))
 
-(define-inspected-class module-test% (class-from-mixins runnable-final-sum test))
+(define-inspected-class test% (class-from-mixins runnable-final-sum test))
 

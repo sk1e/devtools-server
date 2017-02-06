@@ -15,17 +15,18 @@
 
 
 
-;; ;; (defun dt:company-word-backend (command &optional arg &rest ignored)
-;; ;;   (interactive (list 'interactive))
+(defun dt:company-word-backend (command &optional arg &rest ignored)
+  (interactive (list 'interactive))
   
-;; ;;   (cl-case command
-;; ;;     (interactive (company-begin-backend 'dt:company-word-backend))
-;; ;;     (prefix (company-grab-symbol))
-;; ;;     (candidates '("locala" "localb" "localc" "localz" "locale"))))
+  (cl-case command
+    (interactive (company-begin-backend 'dt:company-word-backend))
+    (prefix (company-grab-symbol))
+    (candidates '("locala" "localb" "localc" "localz" "locale"))))
 
 
 ;; (setq q company-backends)
 ;; (setq company-backends '(dt:company-word-backend))
+
 
 ;; (company-grab-symbol-cons)
 ;; (setq company-backends q)

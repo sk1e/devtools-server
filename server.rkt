@@ -48,6 +48,7 @@
  #:prefix pt:
  #:methods
  new-project-from-existing-dir!
+ reload-current-project!
  new-project!
  cache-projects!
  load-project!)

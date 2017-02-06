@@ -1,4 +1,4 @@
-#lang racket/base
+ #lang racket/base
 
 (require "backend/buffer.rkt")
 
@@ -8,8 +8,19 @@
 (define racket-path "/home/kotik/racket")
 
 (define projects-path "/home/kotik/Projects")
-(define project-cache-file-name "project-cache")
 
+(define project-data-directory-name ".project")
+(define project-cache-file-name "cache.rkt")
+(define project-config-file-name "config.rkt")
+
+(define project-default-config #hash((ignored-files . #hash((names . ("compiled"
+                                                                      "backup"
+                                                                      "project-cache"
+                                                                      "node_modules"
+                                                                      "build"
+                                                                      ".git"))
+                                                            (regexps . ("[.]ttf$"
+                                                                        "^.#"))))))
 
 (define ebuffer-tree-indentation 4)
 

@@ -29,13 +29,6 @@
     (inherit-field children)
 
     (inherit push-child!)
-
-    ;; (define/override (child-directory%) directory%)
-
-    ;; (define/override (child-file% name)
-    ;;   (match name
-    ;;     [(regexp #rx"[.]rkt$") module%]
-    ;;     [_ file%]))
     
     (define/public (add-project-node! node)
       (push-child! node)
