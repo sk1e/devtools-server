@@ -16,6 +16,7 @@
 
 (provide module<%>
          module%
+         racket-module%
          child-file-mixin)
 
 (define module<%>

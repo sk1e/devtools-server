@@ -130,7 +130,7 @@
 
 
     (define/public (cache-project!)
-      (cache-node! (build-path (absolute-path) const:project-cache-file-name)))
+      (cache-node! (build-path (absolute-path) const:project-data-directory-name const:project-cache-file-name)))
 
     ;; (define/public (reload-project!)
     ;;   (for-each (compose (method kill!) (method leaf-buffer))

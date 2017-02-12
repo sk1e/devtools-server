@@ -5,9 +5,10 @@
          
          ss/racket/class
 
-
+         "leaf.rkt"
+         "module.rkt"
          "root.rkt"
-
+         "intr.rkt"
          "../file.rkt"
          "../ebuffer.rkt"
          "../serialization.rkt"
