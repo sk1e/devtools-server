@@ -22,7 +22,7 @@
                                                             (regexps . ("[.]ttf$"
                                                                         "^.#"))))))
 
-(define ebuffer-tree-indentation 4)
+(define ebuffer-tree-indentation 3)
 
 
 (define selection-background-color "gray19")
