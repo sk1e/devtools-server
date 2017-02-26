@@ -34,7 +34,7 @@
 (define leaf<%>
   (interface (file:leaf<%> descendant<%>)
     [buffer-name (->m string?)]
-    [switch-to-buffer! (->m void?)]
+    [switch-to-source-code-buffer! (->m void?)]
     [modified-indicator (->m ebuffer:indicator?)]
     [test-indicator (->m ebuffer:indicator?)]
     ))
@@ -75,13 +75,13 @@
     (define/public (test-indicator) (second indicators))
     
     (define/override (post-select!)
-      (switch-to-buffer!))
+      (switch-to-source-code-buffer!))
 
     (define/override (entered-directory) parent)
 
 
-    (define/public (switch-to-buffer!)
-      (send (emacs) deferred-call 'switch-to-buffer (get-field name buffer)))
+    (define/public (switch-to-source-code-buffer!)
+      (send (emacs) deferred-call 'pt:set-source-code-buffer (get-field name buffer)))
 
     
     (define/public (buffer-name)

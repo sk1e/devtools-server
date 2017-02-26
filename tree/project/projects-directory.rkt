@@ -108,6 +108,9 @@
     (define/public (remove-project! project)
       (remove-child! project)
       (set! project-ht (hash-remove project-ht (path->string (get-field name project)))))
+
+    (define/public (post-init-project!)
+      (send (emacs) deferred-call 'pt:init-main-layout))
     
     
     (define/public (new-project!)
@@ -127,7 +130,8 @@
         ;; (send* current-project
         ;;   (make-directory!)
         ;;   (init-tree-buffer!))
-        ]))
+        ])
+      (post-init-project!))
 
 
     (define/public (reload-current-project!)
@@ -152,7 +156,8 @@
       (when (pair? project-children)
         (cond
          [(send current-project first-leaf) => (method select!)]
-         [else (send (car project-children) select!)])))
+         [else (send (car project-children) select!)]))
+      (post-init-project!))
   
   
 
@@ -165,7 +170,7 @@
         (set! current-project (hash-ref project-ht name))
         (send current-project insert-tree!)
         (cond
-         [(get-field current-node current-project) => (method switch-to-buffer!)])]
+         [(get-field current-node current-project) => (method switch-to-source-code-buffer!)])]
        
        [else
         (set! current-project (read-project name))
@@ -176,7 +181,8 @@
           (init-file-buffers!)
           ;; (init-word-autocomplete!)
           )
-        (send (get-field current-node current-project) select!)]))
+        (send (get-field current-node current-project) select!)])
+      (post-init-project!))
     
     
     

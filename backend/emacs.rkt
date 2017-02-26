@@ -14,7 +14,7 @@
 
 (provide read-string-param
          emacs
-         genuine-emacs)
+         remote-emacs)
 
 
 (define emulator-ht #hash())
@@ -71,7 +71,7 @@
     
     ))
 
-(define genuine-emacs%
+(define remote-emacs%
   (class* object% (emacs<%>)
     (super-new)
 
@@ -89,6 +89,6 @@
 
 
 (define emulated-emacs (new emulated-emacs%))
-(define genuine-emacs (new genuine-emacs%))
+(define remote-emacs (new remote-emacs%))
 
 (define emacs (make-parameter emulated-emacs))

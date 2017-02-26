@@ -53,7 +53,7 @@
              root
              buffer-name
              node-identifier
-             switch-to-buffer!
+             switch-to-source-code-buffer!
              test-indicator
              run!
              get-name)

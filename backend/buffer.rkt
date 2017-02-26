@@ -48,7 +48,7 @@
     [set-header! (->m buffer-string? void?)]
     [goto-char! (->m natural-number/c void?)]
     [clear-buffer! (->m void?)]
-    [switch-to-buffer! (->m void)]
+    [switch-to-source-code-buffer! (->m void)]
     [kill! (->m void?)]
     [get-content (->m string?)]
     call-in-buffer
@@ -86,7 +86,7 @@
               goto-char!
               clear-buffer!
               set-header!
-              switch-to-buffer!
+              switch-to-source-code-buffer!
               kill!
               get-content)
     ))
@@ -146,7 +146,7 @@
 
     (define/override (set-header! v) (set! header v))
 
-    (define/override (switch-to-buffer!) (void))
+    (define/override (switch-to-source-code-buffer!) (void))
     (define/override (kill!) (set! content 'killed))
     (define/override (get-content) content)
     
@@ -190,8 +190,16 @@
     (define/override (clear-buffer!)
       ;; todo try erase-buffer
       (call-in-buffer `(lambda () (delete-region 1 (point-max)))))
+
+    (define/override (switch-to-source-code-buffer!)
+      ;; (call! 'switch-to-buffer name)
+      (call! 'pt:set-source-code-buffer name))
     
-    (define/override (switch-to-buffer!) (call! 'switch-to-buffer name))
+    ;; (define/override (switch-to-buffer!)
+    ;;   ;; (call! 'switch-to-buffer name)
+    ;;   (call! 'pt:set-source-code-buffer name)
+    ;;   )
+    
     (define/override (kill!) (call! 'kill-buffer name))
     (define/override (get-content) (call 'buffer-string-no-properties name))
     

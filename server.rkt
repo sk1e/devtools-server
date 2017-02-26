@@ -128,7 +128,7 @@
 ;;                       project-root))
 
 
-(parameterize ([emacs genuine-emacs])
+(parameterize ([emacs remote-emacs])
   (serve! #:log-level 'debug
           #:log-out (open-output-file "/home/kotik/devtools.log" #:mode 'text #:exists 'replace)))
 

@@ -109,7 +109,7 @@
 
 
     (define/public (switch-to-current-project-node!)
-      (send (get-field buffer current-node) switch-to-buffer!))
+      (send (get-field buffer current-node) switch-to-source-code-buffer!))
     
     (define/public (get-name-header)
       (make-buffer-string ((string-append " " (get-name))
@@ -125,7 +125,7 @@
     (define/public (init-file-buffers!)
       (define leaf-nodes (leafs))
       (for-each (method initialize-project-node!) leaf-nodes)
-      (send (car leaf-nodes) switch-to-buffer!))
+      (send (car leaf-nodes) switch-to-source-code-buffer!))
 
 
 

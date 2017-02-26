@@ -51,7 +51,8 @@
   '(( t :inherit dt:header-face :foreground "Orange")) "")
 
 
-
+(defface pt:indentation-marker-face
+  '(( t :inherit dt:ebuffer-node-face :foreground "gray20")) "")
 
 (define-minor-mode pt-mode
   "project tree mode"

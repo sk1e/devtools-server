@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require racket/contract
+         racket/list
          racket/match
          racket/function
          racket/format
@@ -117,6 +118,8 @@
     [select-prev-intr! (->m void?)]
     ))
 
+(define spaces-for-one-indentation-level (make-string (sub1 const:ebuffer-tree-indentation) #\space))
+
 (define descendant-mixin
   (mixin (node<%> segment:descendant<%> serialization:descendant<%>) (descendant<%>)
     (super-new)
@@ -157,7 +160,7 @@
                          (list ,@(map (method node-identifier) indicators)))
             (super field-setter-exprs)))
 
-    (define (indent-len) (* const:ebuffer-tree-indentation (sub1 (depth))))
+    (define (indent-len depth) (* const:ebuffer-tree-indentation (sub1 depth)))
 
     (define/public (init-indicator-list!)
       (set! indicators (indicator-list)))
@@ -176,9 +179,15 @@
       (send (list-ref indicators pos) switch-on!))
     
     
+    
+    ;; (define (make-indentation depth)
+    ;;   (make-buffer-string ((apply string-append (map (lambda _ (string-append "|" spaces-for-one-indentation-level))
+    ;;                                                  (range (sub1 depth))))
+    ;;                        'font-lock-face 'pt:indentation-marker-face)))
+    
     (define/public (solo-representation)
       (bs-append (apply bs-append (map (method representation) indicators))
-                 (make-buffer-string ((string-append (make-string (indent-len) #\space) (get-name) "\n")
+                 (make-buffer-string ((string-append (make-string (indent-len (depth)) #\space) (get-name) "\n")
                                       'font-lock-face (default+extra-face)))))
 
 
@@ -195,7 +204,7 @@
       
             
     (define/public (solo-representation-length)
-      (+ (indent-len) (string-length (get-name)) (length indicators) 1))
+      (+ (indent-len (depth)) (string-length (get-name)) (length indicators) 1))
 
 
     
