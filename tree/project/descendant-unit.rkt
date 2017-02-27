@@ -96,7 +96,10 @@
 
     (define/override (project-path)
       (build-path (send parent project-path) name))
+
     
+    (define/override (mode-line-path)
+      (build-path (send parent mode-line-path) name))
     
     
     ))

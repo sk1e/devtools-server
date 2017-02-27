@@ -141,7 +141,8 @@
 
     (define/override (project-path) 
       (build-path "/" name))
-
+    
+    (define/override (mode-line-path) "/")
     ;; (define/public (init-test-directory-if-not!)
     ;;   (unless test-directory
     ;;     (set! test-directory (make test-directory% [name "tests"]))

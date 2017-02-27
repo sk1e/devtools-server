@@ -48,6 +48,7 @@
 
     (inherit absolute-path
              project-path
+             mode-line-path
              root)
     
     (inherit-field parent
@@ -98,17 +99,17 @@
       (define name (buffer-name))
       (set! buffer (new (send (emacs) buffer%) [name name]))
       (send (emacs) deferred-call 'pt:init-file-buffer
-                     (path->string (absolute-path))
-                     name
-                     (buffer-name-font-parts name)))
+            (path->string (absolute-path))
+            name
+            (buffer-name-font-parts (mode-line-path))))
 
     
     (define/override (pre-rename! new-name)
       (set! buffer (new (send (emacs) buffer%) [name new-name]))
       (send (emacs) deferred-call 'pt:rename-file-buffer
-                     (buffer-name)
-                     new-name
-                     (buffer-name-font-parts new-name)))
+            (buffer-name)
+            new-name
+            (buffer-name-font-parts new-name)))
     
     
     

@@ -16,6 +16,7 @@
 (define node<%>
   (interface (file:node<%> ebuffer:node<%>)
     [project-path (->m path-string?)]
+    [mode-line-path (->m path-string?)]
     ))
 
 (define node-mixin
@@ -25,7 +26,8 @@
     (inherit-field name)
 
 
-    (abstract project-path)
+    (abstract project-path
+              mode-line-path)
 
     (define/override (get-name) (path->string name))
     
