@@ -37,17 +37,7 @@
 (define indicator-test-warning-color "DarkRed")
 (define indicator-test-base-color "DarkGray")
 
-
-;(define-values ())
 (define intr-stack-factor 3)
 
 (define project-tree-buffer-name "project-tree")
 (define git-tree-buffer-name "git-tree")
-
-;; (define project-tree-buffer (make-buffer "ftree"))
-;; (define git-tree-buffer (make-buffer "git-tree"))
-
-
-;(define-buffer project-tree-buffer "ftree")
-
-

@@ -255,7 +255,6 @@
                                                                   [name file-name]))
                                    (filter acceptable-name? files))
                               dir-nodes))
-      ;; (make-constructor (get-child-file%) name)
       
       (for-each (λ (node) (send node
                                 fill-recursively
