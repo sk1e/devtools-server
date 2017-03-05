@@ -77,8 +77,7 @@
              cache-node!
              absolute-path
              node-identifier
-             new-directory
-             add-project-node!)
+             new-directory)
 
     
     ;; (define/override (field-setter-exprs)
@@ -202,4 +201,8 @@
     ))
 
 
-(define-inspected-class root% (class-from-mixins ebuffer:quasiroot-final-sum file:intr-sum ancestor-sum root child-directory child-file))
+(define-inspected-class root% (class-from-mixins ebuffer:quasiroot-final-sum
+                                                 file:intr-sum ancestor-sum
+                                                 root
+                                                 child-directory
+                                                 child-file))

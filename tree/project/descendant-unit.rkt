@@ -19,7 +19,7 @@
 (define (ancestor? x) (is-a? x ancestor<%>))
 
 (define descendant<%>
-  (interface (node<%> ebuffer:descendant<%>)
+  (interface (node<%> ebuffer:descendant<%> file:descendant<%>)
     [entered-directory (-> ebuffer:current-node? ancestor?)]
     [entered-directory-path (-> ebuffer:current-node? path-string?)]
     
@@ -68,12 +68,12 @@
     
     (define/public (add-directory! new-name)
       (define new-dir (send (entered-directory) new-directory new-name))
-      (send (entered-directory) add-project-node/select! new-dir)
+      (send (entered-directory) append-project-node/select! new-dir)
       (send new-dir make-directory-if-not!))
 
     (define/public (add-file! new-name)
       (define new-file (send (entered-directory) new-file new-name))
-      (send (entered-directory) add-project-node/select! new-file))
+      (send (entered-directory) push-project-node/select! new-file))
     
     
     (define/public (delete!)

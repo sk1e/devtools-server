@@ -62,7 +62,13 @@
     (define/override (child-directory%) directory%)))
 
 
-(define-inspected-class directory% (class-from-mixins ebuffer:intr-final-sum file:intr-sum descendant-sum ancestor intr child-directory child-file))
+(define-inspected-class directory% (class-from-mixins ebuffer:intr-final-sum
+                                                      file:intr-sum
+                                                      descendant-sum
+                                                      ancestor
+                                                      intr
+                                                      child-directory
+                                                      child-file))
 
 
 

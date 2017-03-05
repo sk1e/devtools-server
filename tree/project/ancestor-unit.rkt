@@ -18,7 +18,11 @@
 
 (define ancestor<%>
   (interface (node<%>)
-    [add-project-node! (->m (is-a?/c descendant<%>) void?)]))
+    ;; [push-project-node!          (->m (implementation?/c ebuffer:descendant<%>) void?)]
+    ;; [append-project-node!        (->m (implementation?/c descendant<%>) void?)]
+    ;; [push-project-node/select!   (->m (implementation?/c base:descendant<%>) void?)]
+    ;; [append-project-node/select! (->m (implementation?/c base:descendant<%>) void?)]
+    ))
 
 
 
@@ -28,17 +32,30 @@
 
     (inherit-field children)
 
-    (inherit push-child!)
-    
-    (define/public (add-project-node! node)
-      (push-child! node)
+    (inherit push-child!
+             append-child!)
+
+    (define (init-project-node! node)
       (send* node
         (initialize-ebuffer-node!)
         (initialize-project-node!)))
+    
+    (define/public (push-project-node! node)
+      (push-child! node)
+      (init-project-node! node))
+
+    (define/public (append-project-node! node)
+      (append-child! node)
+      (init-project-node! node))
+    
 
 
-    (define/public (add-project-node/select! node)
-      (add-project-node! node)
+    (define/public (push-project-node/select! node)
+      (push-project-node! node)
+      (send node select-as-new!))
+
+    (define/public (append-project-node/select! node)
+      (append-project-node! node)
       (send node select-as-new!))
 
     ))

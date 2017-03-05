@@ -3,7 +3,6 @@
 (require racket/class
          racket/contract
          
-         "../base.rkt"
          "../file.rkt"
          "../ebuffer.rkt"
          "../../backend/emacs.rkt")
