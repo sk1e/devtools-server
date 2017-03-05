@@ -176,8 +176,11 @@
     [circular-prev-leaf (->m leaf?)]
     [circular-next-intr (->m intr?)]
     [circular-prev-intr (->m intr?)]
+    
     [lift! (->m void?)]
     [lower! (->m void?)]
+    [lifting-impossible? (->m boolean?)]
+    [lowering-impossible? (->m boolean?)]
     [pre-lift! (->m descendant? descendant? void?)]
     [post-lift! (->m descendant? descendant? void?)]
     [lift-if-possible! (->m void?)]
@@ -309,11 +312,14 @@
     (define/public (pre-lift! self prev) (void))
     (define/public (post-lift! self prev) (void))
 
+    (define/public (lifting-impossible?) (eq? (prev-sibling) #f))
+    (define/public (lowering-impossible?) (eq? (next-sibling) #f))
+
     (define/public (lift-if-possible!)
-      (when (prev-sibling) (lift!)))
+      (unless (lifting-impossible?) (lift!)))
     
     (define/public (lower-if-possible!)
-      (when (next-sibling) (lower!)))
+      (unless (lowering-impossible?) (lower!)))
     
     
     

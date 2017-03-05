@@ -21,8 +21,7 @@
 
          "base.rkt"
          "segment.rkt"
-         "serialization.rkt"
-         )
+         "serialization.rkt")
 
 
 
@@ -43,7 +42,7 @@
 (define node<%>
   (interface (segment:node<%>)
     
-    [get-name (->m string?)]    
+    [get-name (->m string?)]
     
     [tree-buffer (->m (is-a?/c buffer<%>))]
     [init-insert! (->m void?)]
@@ -58,8 +57,9 @@
     (abstract get-name
               tree-buffer
               init-insert!)
-
-
+    
+    (inherit depth)
+    
     ))
 
 
@@ -81,14 +81,17 @@
     
     [indicator-list (->m (listof indicator?))]
     [init-indicator-list! (->m void?)]
-    [solo-representation-length (->m natural-number/c)]
-    [solo-representation (->m buffer-string?)]
+    ;; [solo-text-representation (->m buffer-string?)]
+    [solo-full-representation (->m buffer-string?)]
+    [solo-full-representation-length (->m natural-number/c)]
     [subtree-representation (->m string?)]
     
     [resultant-solo-end-point (->m natural-number/c)]
     [solo-end-point (->m natural-number/c)]
+    [indent-len (->m natural-number/c natural-number/c)]
     
     [solo-insert! (->m void?)]
+    
     [subtree-insert! (->m void?)]
     [insert/shift-solo! (->m void?)]
     [insert/shift-subtree! (->m void?)]
@@ -100,7 +103,8 @@
 
     [put-extra-ftf-prop! (->m symbol? any/c void?)]
     [remove-extra-ftf-prop! (->m symbol? void?)]
-    
+
+    [fontified-text (->m string? buffer-string?)]
     [fontify! (->m symbol? void?)]
     [mark-as-selected! (->m void?)]
     [mark-as-not-selected! (->m void?)]
@@ -116,6 +120,10 @@
     
     [select-next-intr! (->m void?)]
     [select-prev-intr! (->m void?)]
+
+    [ebuffer-depth (->m natural-number/c)]
+    [lowering-for-prev-leaf-impossible? (->m boolean?)]
+    [lifting-for-next-intr-impossible? (->m boolean?)]
     ))
 
 (define spaces-for-one-indentation-level (make-string (sub1 const:ebuffer-tree-indentation) #\space))
@@ -150,7 +158,12 @@
     
     (abstract subtree-representation
               subtree-insert!
-              default-face)
+              default-face
+              solo-full-representation
+              solo-full-representation-length
+              ebuffer-depth
+              lowering-for-prev-leaf-impossible?
+              lifting-for-next-intr-impossible?)
 
     (define/override (serialization-nodes)
       (append indicators (super serialization-nodes)))
@@ -160,7 +173,7 @@
                          (list ,@(map (method node-identifier) indicators)))
             (super field-setter-exprs)))
 
-    (define (indent-len depth) (* const:ebuffer-tree-indentation (sub1 depth)))
+    (define/public (indent-len depth) (* const:ebuffer-tree-indentation (sub1 depth)))
 
     (define/public (init-indicator-list!)
       (set! indicators (indicator-list)))
@@ -178,49 +191,43 @@
     (define/public (switch-on-indicator! pos)
       (send (list-ref indicators pos) switch-on!))
     
+
+    (define/public (fontified-text text)
+      (make-buffer-string (text 'font-lock-face (default+extra-face))))
     
-    
-    ;; (define (make-indentation depth)
-    ;;   (make-buffer-string ((apply string-append (map (lambda _ (string-append "|" spaces-for-one-indentation-level))
-    ;;                                                  (range (sub1 depth))))
-    ;;                        'font-lock-face 'pt:indentation-marker-face)))
-    
-    (define/public (solo-representation)
-      (bs-append (apply bs-append (map (method representation) indicators))
-                 (make-buffer-string ((string-append (make-string (indent-len (depth)) #\space) (get-name) "\n")
-                                      'font-lock-face (default+extra-face)))))
+
 
 
     (define (default+extra-face)
-      (log-ebuffer-debug "default+extra ht ~a" extra-ftf-prop-ht)
+      ;; (log-ebuffer-debug "default+extra ht ~a" extra-ftf-prop-ht)
       (match extra-ftf-prop-ht
         [(hash-table (key value) ..1) `(:inherit ,(default-face)
                                                  ,@(apply append (map list key value)))]
         [_ (default-face)]))
 
     (define (refontify-with-extra!)
-      (log-ebuffer-debug "refontify-with-extra default+extra ~a" (default+extra-face))
       (fontify! (default+extra-face)))
       
             
-    (define/public (solo-representation-length)
-      (+ (indent-len (depth)) (string-length (get-name)) (length indicators) 1))
 
 
     
-    (define/public (solo-end-point) (+ point (solo-representation-length)))
+    (define/public (solo-end-point) (+ point (solo-full-representation-length)))
     
     (define/public (resultant-subtree-end-point) (+ (resultant-offset) (subtree-end-point)))
     
-    (define/public (resultant-solo-end-point) (+ (resultant-point) (solo-representation-length)))
+    (define/public (resultant-solo-end-point)
+      (log-ebuffer-debug "resultant-solo-end-point ~a ~a"
+                         (get-name)
+                         (resultant-point))
+      (+ (resultant-point) (solo-full-representation-length)))
     
 
     
     (define/override (init-insert!)
-      (send (tree-buffer) insert (solo-representation)))
+      (send (tree-buffer) insert (solo-full-representation)))
     
     (define/public (fontify! face)
-      (log-ebuffer-debug "fontify ~a" face)
       (send (tree-buffer)
             put-text-property
             (+ (resultant-point) (length (indicator-list)))
@@ -230,7 +237,6 @@
 
     (define/public (put-extra-ftf-prop! key value)
       (set! extra-ftf-prop-ht (hash-set extra-ftf-prop-ht key value))
-      (log-ebuffer-debug "put-extra post ht ~a" extra-ftf-prop-ht)
       (refontify-with-extra!))
 
     (define/public (remove-extra-ftf-prop! key)
@@ -239,7 +245,6 @@
 
 
     (define/public (mark-as-selected!)
-      (log-ebuffer-debug "mark as selected")
       (put-extra-ftf-prop! ':background const:selection-background-color))
 
 
@@ -316,7 +321,7 @@
 
         
     (define/public (solo-insert!)
-      (send (tree-buffer) insert (solo-representation) #:point (resultant-point)))
+      (send (tree-buffer) insert (solo-full-representation) #:point (resultant-point)))
 
 
     (define/public (insert/shift-subtree!)
@@ -336,8 +341,9 @@
     (define/override (post-lift! self prev)
       (send* self (infer-point!) (insert/shift-subtree!))
       (send* prev (infer-point!) (insert/shift-subtree!)))
-    
-    
+
+
+
     ))
 
 
@@ -413,11 +419,11 @@
       
       (for ([desc (descendants)])
         (send* desc (init-indicator-list!) (init-insert!) (infer-point!))))
-    
+
     
     ;; (define/override (face) 'sg-root-face-wtf)
     
-      
+    
     ;; remove
     (define/public (lift-current-node!)
       (send current-node lift-if-possible!))
@@ -432,6 +438,7 @@
 
 (define intr<%>
   (interface (descendant<%> ancestor<%> segment:intr<%> serialization:intr<%>)
+    [solo-ancestors-representation (->m buffer-string?)]
     ))
 
 (define intr-mixin
@@ -440,16 +447,33 @@
 
     (inherit solo-end-point
              solo-insert!
-             solo-representation
-             solo-representation-length
              last-descendant-or-self
              shift-children!
              resultant-point
-             resultant-solo-end-point)
+             resultant-solo-end-point
+             depth
+             fontified-text
+             get-name
+             indent-len
+             prev-sibling)
     
-    (inherit-field children)
+    (inherit-field children
+                   parent
+                   indicators)
 
-    (define/override (default-face) 'pt:intr-face)
+    (define/override (default-face)
+      ;; 'pt:intr-face)
+      (match (depth)
+        [3 'pt:intr-3-face]
+        [2 'pt:intr-2-face]
+        [1 'pt:intr-1-face]
+        [_ 'pt:intr->3-face]))
+
+    (define/override (ebuffer-depth)
+      (define d (depth))
+      (cond
+        [(<= d const:intr-stack-factor) 1]
+        [else (add1 (- d const:intr-stack-factor))]))
     
 
     (define/override (subtree-end-point)
@@ -466,14 +490,62 @@
     (define/override (subtree-insert!)
       (solo-insert!)
       (for-each (method subtree-insert!) children))
+
+
+    (define/public (solo-ancestors-representation)
+      (define sub-representation (bs-append (fontified-text (get-name))
+                                            (fontified-text "/")))
+      (match (depth)
+        [1 sub-representation]
+        [_ (bs-append (send parent solo-ancestors-representation)
+                      sub-representation)]))
+
+    (define (stacked-intr? depth)
+      (and (<= depth const:intr-stack-factor) (> depth 1)))
+
+
     
-    (define/override (point-for-first-child) (solo-representation-length))
+    (define/override (solo-full-representation)
+      (define name (fontified-text (get-name)))
+      (bs-append (apply bs-append (map (method representation) indicators))
+                 (fontified-text (make-string (indent-len (ebuffer-depth)) #\space))
+                 (cond
+                   [(stacked-intr? (depth))
+                    (bs-append (send parent solo-ancestors-representation)
+                               (bs-append (apply bs-append (map (method representation) indicators))
+                                          name))]
+                   [else name])
+                 (fontified-text "\n")))
 
+    (define/public (solo-stack-length)
+      (define len (add1 (string-length (get-name))))
+      (match (depth)
+        [1 len]
+        [_ (+ len (send parent solo-stack-length))]))
 
+    
+
+    ;; (define/public (solo-full-representation-length)
+    ;;   (+ (indent-len (ebuffer-depth)) (string-length (get-name)) (length indicators) 1))
+
+    (define/override (solo-full-representation-length)
+      (+ (length indicators)
+         (indent-len (ebuffer-depth))
+         (string-length (get-name))
+         (cond
+           [(stacked-intr? (depth))
+            (send parent solo-stack-length)]
+           [else 0])
+         1))
+
+    
+    (define/override (point-for-first-child) (solo-full-representation-length))
+
+    
 
     (define/override (subtree-representation)
       (apply string-append
-             (get-field value (solo-representation))
+             (get-field value (solo-full-representation))
              (map (method subtree-representation) children)))
 
 
@@ -486,6 +558,12 @@
       (super insert/shift-solo!)
       (shift-children! (- (resultant-solo-end-point) (resultant-point))))
     
+    (define/override (lifting-impossible?)
+      (or (super lifting-impossible?)
+          (send (prev-sibling) lifting-for-next-intr-impossible?)))
+
+    (define/override (lifting-for-next-intr-impossible?) #f)
+    (define/override (lowering-for-prev-leaf-impossible?) #t)
     
     ))
 
@@ -500,9 +578,14 @@
     
     (inherit solo-end-point
              solo-insert!
-             solo-representation)
+             indent-len
+             get-name
+             fontified-text
+             depth
+             next-sibling)
     
-    (inherit-field parent)
+    (inherit-field parent
+                   indicators)
 
     (define/override (default-face) 'pt:leaf-face)
 
@@ -511,8 +594,33 @@
     (define/override (subtree-insert!) (solo-insert!))
     
     (define/override (subtree-representation)
-      (get-field value (solo-representation)))
+      (get-field value (solo-full-representation)))
 
+    (define/override (solo-full-representation)
+      (define indent (make-string (indent-len (ebuffer-depth)) #\space))
+      (define text (string-append indent (get-name) "\n"))
+      (define indicators-representation (apply bs-append (map (method representation) indicators)))
+      (bs-append indicators-representation (fontified-text text)))
+
+    (define/override (solo-full-representation-length)
+      (+ (length indicators)
+         (indent-len (ebuffer-depth))
+         (string-length (get-name))
+         1))
+
+    (define/override (ebuffer-depth)
+      (define d (depth))
+      (cond
+        [(= d 1) 1]
+        [(<= d (add1 const:intr-stack-factor)) 2] 
+        [else (add1 (- d const:intr-stack-factor))])) 
+    
+    (define/override (lowering-impossible?)
+      (or (super lowering-impossible?)
+          (and (send (next-sibling) lowering-for-prev-leaf-impossible?))))
+
+    (define/override (lifting-for-next-intr-impossible?) #t)
+    (define/override (lowering-for-prev-leaf-impossible?) #f)
     
     ))
 

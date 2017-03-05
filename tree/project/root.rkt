@@ -169,7 +169,7 @@
     (define/public (run-other-if-left!)
       (match running-modules
         ['() (void)]
-        [(cons (cons module executor) _) (send module run-start! executor)]))
+        [(cons (cons module-node executor) _) (send module-node run-start! executor)]))
 
 
 

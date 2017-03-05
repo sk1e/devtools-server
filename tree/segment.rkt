@@ -13,6 +13,7 @@
 
 (provide (prefix-out segment: (suffixed-as interface mixin #:from (all-defined-out))))
 
+(define-logger segment)
 
 (define node<%>
   (interface (base:node<%> serialization:node<%>) 

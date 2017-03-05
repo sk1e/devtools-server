@@ -12,6 +12,7 @@
          "test.rkt"
          "../file.rkt"
          "../../constants.rkt"
+         "../../utils/path.rkt"
          )
 
 (provide module<%>
@@ -72,7 +73,7 @@
       (send test-module initialize-project-node!))
     
     (define/public (test-name)
-      (string-append (string-join (match (map path->string (cddr (file:path->list (project-path))))
+      (string-append (string-join (match (map path->string (cddr (path->list (project-path))))
                                     [(list x ... last)
                                      (append x (list (substring last
                                                                 0

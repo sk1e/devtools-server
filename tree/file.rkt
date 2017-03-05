@@ -13,7 +13,8 @@
                   
          "base.rkt"
          "serialization.rkt"
-         )
+         "../utils/path.rkt")
+
 
 (provide (prefix-out file: (combine-out (suffixed-as interface mixin class
                                                      #:from (all-defined-out))
@@ -216,7 +217,6 @@
 
 
 
-
 (define intr<%>
   (interface (ancestor<%> descendant<%>)
     
@@ -251,10 +251,11 @@
       (define dir-nodes (map (make-constructor (child-directory%) name)
                              (filter acceptable-name? dirs)))
       
-      (init-children! (append dir-nodes (map (λ (file-name) (make (child-file% (path->string file-name))
-                                                             [name file-name]))
-                                            ;; (make-constructor (get-child-file%) name)
-                                            (filter acceptable-name? files))))
+      (init-children! (append (map (λ (file-name) (make (child-file% (path->string file-name))
+                                                                  [name file-name]))
+                                   (filter acceptable-name? files))
+                              dir-nodes))
+      ;; (make-constructor (get-child-file%) name)
       
       (for-each (λ (node) (send node
                                 fill-recursively
@@ -264,7 +265,7 @@
 
     (define/public (new-file name)
       (make (child-file% name) [name name]))
-      ;(make (child-file%) [name name]))
+    ;(make (child-file%) [name name]))
     
     (define/public (new-directory name)
       (make (child-directory%) [name name]))
@@ -336,7 +337,7 @@
 
 ;;     (define/override (file-root) this)
 
-    
+
 ;;     )
 
 (define-inspected-class root%
@@ -385,14 +386,6 @@
     (super-new)))
 
 
-(define/contract (path->list path)
-  (-> path-string? (listof path?))
-  (let splitted ([p path]
-                 [acc '()])
-    (define-values (base name _) (split-path p))
-    (cond
-     [base (splitted base (cons name acc))]
-     [else (cons name acc)])))
 
 
 ;; (define/contract (list-prefix? lst prefix)

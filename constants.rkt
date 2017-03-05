@@ -39,7 +39,7 @@
 
 
 ;(define-values ())
-
+(define intr-stack-factor 3)
 
 (define project-tree-buffer-name "project-tree")
 (define git-tree-buffer-name "git-tree")
