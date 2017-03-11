@@ -24,7 +24,7 @@
 
 
 
-(define-syntax (produce-epc-methods stx)
+(define-syntax (produce-services stx)
   
   (syntax-parse stx
     [(_ #:on-object object:expr
@@ -43,7 +43,7 @@
 
 (on-terminate (λ () (send projects-node cache-projects!)))
 
-(produce-epc-methods
+(produce-services
  #:on-object projects-node
  #:prefix pt:
  #:methods
@@ -53,7 +53,7 @@
  cache-projects!
  load-project!)
 
-(produce-epc-methods
+(produce-services
  #:on-object (get-field current-project projects-node)
  #:prefix pt:
  #:methods
@@ -63,7 +63,7 @@
  switch-to-current-project-node!
  complete-word)
 
-(produce-epc-methods
+(produce-services
  #:on-object (get-field+ projects-node current-project git-root)
  #:prefix gt:
  #:methods
@@ -73,7 +73,7 @@
  checkout-master!)
 
 
-(produce-epc-methods
+(produce-services
  #:on-object (get-field+ projects-node current-project git-root current-node)
  #:prefix gt:
  #:methods 
@@ -84,7 +84,7 @@
  merge!)
 
 
-(produce-epc-methods
+(produce-services
  #:on-object (get-field+ projects-node current-project current-node)
  #:prefix pt:
  #:methods
@@ -101,31 +101,12 @@
  test-buffer-name)
 
 
-(produce-epc-methods
+(produce-services
  #:on-object (send (get-field current-project projects-node) current-running-module)
  #:prefix pt:
  #:methods
  on-exit-status! on-unexpected-status! on-test-result!)
 
-
-
-
-;; (produce-epc-methods
-;;  #:on-object (get-field current-leaf current-project)
-;;  #:prefix ft-
-;; ; #:for-side-effects? #t
-;;  #:methods lift-if-possible lower-if-possible)
-
-
-
-;; (define-epc-method (project-next-leaf)
-;;   (send current-project select-next))
-
-
-;; (new-project-from-dir! "python-epc")
-;; (get-field name (send projects-node root))
-;; (get-field name (send (car (get-field children (car (get-field children projects-node))))
-;;                       project-root))
 
 
 (parameterize ([emacs remote-emacs])
