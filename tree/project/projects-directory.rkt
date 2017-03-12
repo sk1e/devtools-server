@@ -113,7 +113,8 @@
     (define/public (post-init-current-project!)
       (send (emacs) deferred-call 'pt:init-main-layout)
       (define config (read-project-config (get-field name current-project)))
-      (send current-project init-shortcut-ht (hash-ref config 'shortcuts)))
+      (when (hash-has-key? config 'shortcuts)
+        (send current-project init-shortcut-ht (hash-ref config 'shortcuts))))
     
     
     (define/public (new-project!)

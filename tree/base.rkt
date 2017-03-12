@@ -88,6 +88,7 @@
     [find-dfs (->m (-> node? any) any)]
     [depth (->m natural-number/c)]
     [root (->m root?)]
+    [nth-ancestor (->m natural-number/c ancestor?)]
     [last-descendant-or-self (->m node?)]
     [first-leaf (->m (or/c leaf? #f))]
     [last-leaf (->m (or/c leaf? #f))]
@@ -110,7 +111,8 @@
               last-leaf
               leafs
               nodes
-              next-descendant-neighbour)
+              next-descendant-neighbour
+              nth-ancestor)
                     
     (define/public (equal-to? other recur)
       (match (equality-fields)
@@ -150,8 +152,7 @@
 
 (define descendant<%>
   (interface (node<%>)
-    repr-with-tree 
-    
+    repr-with-tree     
     
     [next-sibling (->m (or/c descendant? #f))]
     [prev-sibling (->m (or/c descendant? #f))]
@@ -159,6 +160,8 @@
     [all-ancestors-till-exclusive (->m ancestor? (listof ancestor?))]
     [next-neighbour (->m (or/c descendant? #f))]
     [prev-neighbour (->m (or/c descendant? #f))]
+    
+    (last-ancestor (->m natural-number/c ancestor?))
     
     [prev-neighbour-for-next-sibling (->m (or/c descendant? #f))]
     [remove! (->m void?)]
@@ -200,7 +203,7 @@
               next-intr-for-prev-neighbour
               prev-intr-for-next-neighbour)
 
-
+    
         
     (define/override (root) (send parent root))
     
@@ -208,8 +211,19 @@
       (add1 (send parent depth)))
     
     
-    (define/public (repr-with-tree)
-      'fixme)
+    (define/public (repr-with-tree) 'fixme)
+
+    (define/override (nth-ancestor n)
+      (match n
+        [0 this]
+        (x (send parent nth-ancestor (sub1 n)))))
+
+    (define/public (last-ancestor n)
+      (define d (depth))
+      (cond 
+        [(< d n) #f]
+        [(= d n) this]
+        [else (nth-ancestor (- d n))]))
     
     ;; (send (root) display-tree this))
 
@@ -476,6 +490,11 @@
     
     ;; (define/override (display-tree node-to-highlight)
     ;;   (super display-tree node-to-highlight 0))
+
+    (define/override (nth-ancestor n)
+      (match n
+        [0 this]
+        (_ #f)))
 
     
     (define/override (prev-neighbour-for-first-child) #f)

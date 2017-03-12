@@ -51,7 +51,8 @@
              remove-file-or-directory!
              absolute-path
              last-descendant-or-self
-             prev-leaf)
+             prev-leaf
+             last-ancestor)
     
     
     (abstract entered-directory
@@ -63,6 +64,25 @@
        [(or (prev-leaf) (send (last-descendant-or-self) next-leaf)) => (method select!)])
       (super remove-from-tree!))
 
+    
+    (define/public (switch-to-next-section!)
+      (cond [(last-ancestor 3) =>
+         (lambda (x) (cond
+                  [(send x next-sibling) =>
+                   (lambda (next)
+                     (send+ next
+                            (first-leaf)
+                            (select-as-new!)))]))]))
+    
+    (define/public (switch-to-prev-section!)
+      (cond
+        [(last-ancestor 3) =>
+         (lambda (x) (cond
+                  [(send x prev-sibling) =>
+                   (lambda (prev)
+                     (send+ prev
+                            (first-leaf)
+                            (select-as-new!)))]))]))
     
     (define/public (entered-directory-path) (path->string (send (entered-directory) absolute-path)))
     

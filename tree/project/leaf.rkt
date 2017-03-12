@@ -58,7 +58,7 @@
     ;; todo make private
     (field [buffer 'uninitialized])
 
-    
+
     ;; (define/override (face) 'pt:leaf-face)
     
     (define/override (indicator-list)

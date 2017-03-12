@@ -89,9 +89,10 @@
  #:on-object (get-field+ projects-node current-project current-node)
  #:prefix pt:
  #:methods
- select-next-leaf! select-prev-leaf!
+ select-next-leaf!   select-prev-leaf!
  select-next-leaf-4! select-prev-leaf-4!
- select-next-intr! select-prev-intr!
+ select-next-intr!   select-prev-intr!
+ switch-to-next-section! switch-to-prev-section!
  add-directory! add-file! entered-directory-path
  rename!
  remove-from-tree! delete!
