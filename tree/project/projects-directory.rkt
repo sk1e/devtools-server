@@ -163,6 +163,7 @@
         (cond
          [(send current-project first-leaf) => (method select!)]
          [else (send (car project-children) select!)]))
+      (send current-project cache-project!)
       (post-init-current-project!))
   
   
