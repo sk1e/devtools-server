@@ -61,7 +61,8 @@
  ;select-by-name!
  initialize-git-repository!
  switch-to-current-project-node!
- complete-word)
+ complete-word
+ switch-by-shortcut!)
 
 (produce-services
  #:on-object (get-field+ projects-node current-project git-root)

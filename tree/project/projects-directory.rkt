@@ -49,6 +49,7 @@
     [cache-projects! (->m void?)]
 
     [remove-project! (->m (is-a?/c root<%>) void?)]
+
     ))
 
 
@@ -109,8 +110,10 @@
       (remove-child! project)
       (set! project-ht (hash-remove project-ht (path->string (get-field name project)))))
 
-    (define/public (post-init-project!)
-      (send (emacs) deferred-call 'pt:init-main-layout))
+    (define/public (post-init-current-project!)
+      (send (emacs) deferred-call 'pt:init-main-layout)
+      (define config (read-project-config (get-field name current-project)))
+      (send current-project init-shortcut-ht (hash-ref config 'shortcuts)))
     
     
     (define/public (new-project!)
@@ -131,8 +134,10 @@
         ;;   (make-directory!)
         ;;   (init-tree-buffer!))
         ])
-      (post-init-project!))
+      (post-init-current-project!))
 
+    (define/public (read-project-config name)
+      (call-with-input-file (project-config-path name) read))
 
     (define/public (reload-current-project!)
       (new-project-from-existing-dir! (send current-project get-name)))
@@ -144,7 +149,7 @@
       (init-new-project! name)
       (init-project-data! name)
 
-      (define config (call-with-input-file (project-config-path name) read))
+      (define config (read-project-config name))
       
       (send* current-project
         (fill-recursively #:filter-not-rx (fill-filter-regexp config))
@@ -157,7 +162,7 @@
         (cond
          [(send current-project first-leaf) => (method select!)]
          [else (send (car project-children) select!)]))
-      (post-init-project!))
+      (post-init-current-project!))
   
   
 
@@ -182,7 +187,7 @@
           ;; (init-word-autocomplete!)
           )
         (send (get-field current-node current-project) select!)])
-      (post-init-project!))
+      (post-init-current-project!))
     
     
     

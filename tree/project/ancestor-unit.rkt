@@ -1,6 +1,7 @@
 #lang racket/unit
 
 (require racket/match
+         racket/contract
 
          ss/racket/class
          
@@ -18,6 +19,7 @@
 
 (define ancestor<%>
   (interface (node<%>)
+    [find-node-by-chain (->m (listof string?) any)]
     ;; [push-project-node!          (->m (implementation?/c ebuffer:descendant<%>) void?)]
     ;; [append-project-node!        (->m (implementation?/c descendant<%>) void?)]
     ;; [push-project-node/select!   (->m (implementation?/c base:descendant<%>) void?)]
@@ -57,6 +59,17 @@
     (define/public (append-project-node/select! node)
       (append-project-node! node)
       (send node select-as-new!))
+    
+    (define/public (find-node-by-chain chain)
+      (match children
+        [(list _ ... (? (lambda (v)
+                          (displayln (format ">>>>> ~a ~a" (send v get-name) (car chain)))
+                          (equal? (car chain) (send v get-name))) next)
+               _ ...)
+         (match (cdr chain)
+           ['() next]
+           [xs (send next find-node-by-chain xs)])]))
+
 
     ))
 

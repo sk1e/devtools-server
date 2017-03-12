@@ -66,7 +66,7 @@
     ;; (field [test-directory #f]
     ;;        ;; [git-root #f]
     ;;        )
-
+    (field [shortcut-ht 'uninitialized])
 
     
     (inherit-field current-node name parent)
@@ -77,7 +77,8 @@
              cache-node!
              absolute-path
              node-identifier
-             new-directory)
+             new-directory
+             find-node-by-chain)
 
     
     ;; (define/override (field-setter-exprs)
@@ -86,7 +87,8 @@
     ;;                          (super field-setter-exprs))]
     ;;    [else (super field-setter-exprs)]))
 
-    
+    (define/public (init-shortcut-ht v)
+      (set! shortcut-ht v))
 
     (define/override (next-neighbour) #f)
     
@@ -99,13 +101,20 @@
                                                                        :family "Liberation Mono"
                                                                        :foreground "CornflowerBlue"))))))
 
+
+
     (define/override (pre-tree-insert!)
       (super pre-tree-insert!)
       (send (tree-buffer) set-header! (get-name-header)))
     ;; (send (tree-buffer) set-header! (cond
     ;;                                  [git-root (send (get-name-header) concat (send git-root header-suffix))]
     ;;                                  [else (get-name-header)])))
-
+    
+    (define/public (switch-by-shortcut! char-integer)
+      (send+
+       (find-node-by-chain (hash-ref shortcut-ht (integer->char char-integer)))
+       (first-leaf)
+       (select-as-new!)))
 
     (define/public (switch-to-current-project-node!)
       (send (get-field buffer current-node) switch-to-source-code-buffer!))
