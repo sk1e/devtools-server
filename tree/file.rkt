@@ -68,10 +68,14 @@
     
     (define/public (node-path-list) (reverse (reversed-node-path-list)))
     
-    (define/public (init-name! v)
+    (define/public (init-name! v)      
       (set! name (match v
                    [(? path? _) v]
-                   [(? string? _) (string->path-element v)])))
+                   [(? string? _)
+                    ;; ivy returns abs path string
+                    (define-values (base name _) (split-path v))
+                    ;; (string->path-element v)
+                    name])))
 
     
     (define/override (repr-fields)
