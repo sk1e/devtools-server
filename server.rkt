@@ -51,7 +51,8 @@
  reload-current-project!
  new-project!
  cache-projects!
- load-project!)
+ load-project!
+ bind-current-node!)
 
 (produce-services
  #:on-object (get-field current-project projects-node)

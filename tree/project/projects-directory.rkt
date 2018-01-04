@@ -1,4 +1,4 @@
- #lang racket/base
+#lang racket/base
 
 (require racket/contract
          racket/string
@@ -12,6 +12,7 @@
          "../file.rkt"
          "../ebuffer.rkt"
          "../serialization.rkt"
+         "../../utils/path.rkt"
          "../../constants.rkt"
          "../../backend/emacs.rkt"
          )
@@ -49,7 +50,6 @@
     [cache-projects! (->m void?)]
 
     [remove-project! (->m (is-a?/c root<%>) void?)]
-
     ))
 
 
@@ -72,7 +72,9 @@
       (set! project-ht (hash-set project-ht (path->string (get-field name node)) node)))
 
     (define (project-data-directory-path name)
-      (build-path (absolute-path) name const:project-data-directory-name))
+      (build-path (absolute-path) name const:project-data-directory-name)
+      ;; (build-path name const:project-data-directory-name)
+      )
     
     (define (project-cache-path name)
       (build-path (project-data-directory-path name) const:project-cache-file-name))
@@ -95,11 +97,37 @@
     
     (define (make-config-if-not! name)
       (unless (config-exists? name)
-        (call-with-output-file (project-config-path name) (lambda (out) (write const:project-default-config out)))))
+        (write-config! name const:project-default-config)))
+
+    (define (write-config! project-name config)
+      (call-with-output-file (project-config-path project-name)
+        (lambda (out) (write config out))
+        #:exists 'replace))
     
+
     (define (init-project-data! name)
       (make-project-data-if-not! name)
       (make-config-if-not! name))
+
+    (define/public (bind-current-node! char-integer)
+      (define old-config (read-project-config (get-field name current-project)))
+      (cond
+        [(hash-has-key? old-config 'shortcuts)
+         (define new-config
+           (hash-update
+            old-config
+            'shortcuts
+            (lambda (x)
+              (hash-set
+               x
+               (integer->char char-integer)
+               (map path->string
+                    (cddr (path->list (send (get-field current-node current-project)
+                                            project-path))))))))
+
+         (send current-project init-shortcut-ht (hash-ref new-config 'shortcuts))
+         (write-config! (send current-project get-name) new-config)]
+        [else (displayln (format "no shortcuts for config ~a" old-config))]))
 
     (define/public (init-new-project! name)
       (set! current-project (new-directory name))
@@ -142,7 +170,7 @@
 
     (define/public (reload-current-project!)
       (new-project-from-existing-dir! (send current-project get-name)))
-    
+
     (define/public (new-project-from-existing-dir! name)
       ;; (when (or (not (cache-exists? name))
       ;;           (equal? 't (send (emacs) direct-call 'yes-or-no-p "there is a cache for this project, make new project anyway? ")))
